@@ -1,0 +1,30 @@
+\ Test Refactored AniKode Compiler \
+~ This tests simplified comments, statement-disabling comments, and each loops ~
+
+--
+This is a standard block comment.
+It should be ignored by the compiler.
+--
+
+say.out("--- Testing each loops ---")
+set fruits = ["apple", "banana", "orange"]
+
+each fruit in fruits {
+  say.out("Fruit: " + fruit)
+}
+
+say.out("--- Testing Statement Disabling #5# ---")
+
+#5#
+say.out("Disabled 1")
+say.out("Disabled 2")
+let x = 10 \ this should be disabled \
+say.out(x) \ this should be disabled \
+say.out("Disabled 5")
+
+say.out("This statement is ACTIVE and runs after #5#!")
+
+#1#
+say.out("This print is disabled by #1#")
+
+say.out("Done testing!")

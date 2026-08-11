@@ -1,0 +1,29 @@
+-- Testing Russian Nesting Doll Recursion using the recurse keyword --
+
+fn openDoll(size) {
+  if size == 1 {
+    return "Prize Found!"
+  }
+  say.out("Opening doll of size: " + size)
+  return recurse(size - 1)  -- Automatically calls openDoll recursively --
+}
+
+say.out("--- STARTING NESTING DOLLS RECURSION ---")
+let result = openDoll(4)
+say.out("Result:")
+say.out(result)
+
+# Let's test mathematical recursion: Factorial of 5 #
+# 5! = 5 * 4 * 3 * 2 * 1 = 120 #
+
+fn factorial(n) {
+  if n <= 1 {
+    return 1
+  }
+  return n * recurse(n - 1)  -- Automatically calls factorial recursively --
+}
+
+say.out("--- CALCULATING FACTORIAL OF 5 ---")
+let factVal = factorial(5)
+say.out("Factorial of 5 is:")
+say.out(factVal)

@@ -1,0 +1,20 @@
+{
+  "name": "anikode",
+  "version": "1.0.0",
+  "description": "The AniKode Programming Language compiler and CLI runner.",
+  "main": "runner.js",
+  "bin": {
+    "anikode": "./runner.js"
+  },
+  "scripts": {
+    "test-lexer": "node test_lexer.js",
+    "test-parser": "node test_parser.js"
+  },
+  "keywords": [
+    "anikode",
+    "compiler",
+    "language"
+  ],
+  "author": "Ayush",
+  "license": "ISC"
+}

@@ -1,0 +1,18 @@
+\ Test Null Keyword Support \
+let x = null
+set y = "valid string"
+
+say.out("Initial value of x:")
+say.out(x)
+
+if x == null {
+  say.out("x is indeed null!")
+}
+
+x = "now not null"
+say.out("Updated value of x:")
+say.out(x)
+
+if x != null {
+  say.out("x is no longer null!")
+}

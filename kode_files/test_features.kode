@@ -1,0 +1,43 @@
+~ 1. Try-Catch & Throw testing
+try {
+  say.out("Entering try block...")
+  throw Error("Standard exception message")
+} catch error {
+  say.out("Caught exception type:", error.type)
+  say.out("Exception message:", error.message)
+} finally {
+  say.out("Finally cleanup executed successfully!")
+}
+
+~ 2. Logical Operators testing
+let hasTicket = true
+let isVIP = false
+
+if hasTicket or isVIP {
+  say.out("Access granted!")
+}
+
+let code = true and false
+say.out("true and false is:", code)
+
+let different = true xor false
+say.out("true xor false is:", different)
+
+~ 3. Dictionaries & List Methods testing
+let user = {
+  "name": "Ayush",
+  "score": 95
+}
+say.out("User score is:", user.score)
+
+let list = [10, 20]
+list.add(30)
+say.out("List length:", list.len())
+say.out("First element:", list.first())
+say.out("Last element:", list.last())
+
+~ 4. File I/O testing
+let filename = "sample_output.txt"
+file.write(filename, "AniKode filesystem works perfectly!")
+let contents = file.read(filename)
+say.out("File contents:", contents)

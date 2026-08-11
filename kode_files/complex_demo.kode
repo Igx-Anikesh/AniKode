@@ -1,0 +1,77 @@
+~ AniKode v3.0 Complex Integration Demo ~
+
+say.out("=== STARTING INTEGRATED AUDIT PIPELINE ===")
+
+~ 1. Source database of user profiles (CSV-like raw strings) ~
+let rawData = "  Ayush:Admin:95 , Rohan:User:45 , Priya:User:88 , Sneha:Guest:-10 "
+say.out("Raw Data: '", rawData.trim(), "'")
+
+let records = rawData.split(",")
+say.out("Loaded records count:", records.len())
+
+let parsedUsers = []
+
+~ 2. Parse and validate records ~
+each record in records {
+  let cleaned = record.trim()
+  let parts = cleaned.split(":")
+  
+  if parts.len() == 3 {
+    let name = parts.get(0).trim()
+    let role = parts.get(1).trim()
+    let scoreRaw = parts.get(2).trim()
+    
+    try {
+      let scoreVal = int(scoreRaw)
+      
+      ~ Clamp the score to standard [0, 100] range ~
+      let score = math.clamp(scoreVal, 0, 100)
+      
+      let userObj = {
+        "name": name,
+        "role": role,
+        "score": score,
+        "originalScore": scoreVal
+      }
+      
+      parsedUsers.add(userObj)
+      say.out("Successfully audited user:", name, "(Role:", role, ", Score:", score, ")")
+    } catch err {
+      say.out("Error parsing score for record '", cleaned, "':", err.message)
+    }
+  }
+}
+
+say.out("")
+say.out("=== SECURITY RULE VALIDATION (Propositional Logic) ===")
+~ Security Policy: If a user is an Admin, their score must be >= 90. (role == "Admin" implies score >= 90) ~
+let validations = []
+
+each user in parsedUsers {
+  let isAdmin = (user.role == "Admin")
+  let hasHighScore = (user.score >= 90)
+  
+  ~ Apply 'implies' operator ~
+  let rulePassed = (isAdmin implies hasHighScore)
+  validations.add(rulePassed)
+  
+  say.out("User:", user.name, "| Admin:", isAdmin, "| Score:", user.score, "| Rule Passed:", rulePassed)
+}
+
+say.out("")
+say.out("=== GLOBAL PIPELINE AUDIT ===")
+say.out("Did ALL users pass the security rule?:", all(validations))
+say.out("Did ANY user pass the security rule?:", any(validations))
+
+say.out("")
+say.out("=== STATISTICAL ANALYSIS ===")
+let totalScore = 0
+each user in parsedUsers {
+  totalScore = totalScore + user.score
+}
+let avgScore = float(totalScore) / float(parsedUsers.len())
+say.out("Average Validated Score:", avgScore)
+say.out("math.round(Average):", math.round(avgScore))
+
+say.out("")
+say.out("=== PIPELINE COMPLETION ===")

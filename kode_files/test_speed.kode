@@ -1,0 +1,11 @@
+\ AniKode High Speed Benchmark Test \
+set sum = 0
+
+say.out("--- STARTING 10,000,000 ITERATIONS LOOP ---")
+
+loop i from 1 to 10000000 {
+  sum = sum + i
+}
+
+say.out("Finished!")
+say.out("Sum:", sum)

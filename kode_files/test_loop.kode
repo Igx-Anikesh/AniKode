@@ -1,0 +1,13 @@
+-- First, let's test our new paired comment syntax! --
+// This is a javascript style comment //
+# And python style comment #
+
+say.out("--- COUNTING UP FROM 1 TO 5 ---")
+loop i from 1 to 5 {
+  say.out(i)
+}
+
+say.out("--- COUNTING DOWN FROM 5 TO 1 ---")
+loop i from 5 to 1 {
+  say.out(i)
+}

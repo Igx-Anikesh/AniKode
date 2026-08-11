@@ -1,0 +1,106 @@
+~ AniKode v3.0 Feature Extensions Test Suite ~
+
+say.out("--- 1. String API Verification ---")
+let text = "  AniKode Programming  "
+say.out("Original: '", text, "'")
+say.out("Length:", text.len())
+say.out("Trimmed: '", text.trim(), "'")
+say.out("Upper:", text.upper().trim())
+say.out("Lower:", text.lower().trim())
+
+let splitList = "apple,banana,orange".split(",")
+say.out("Split count:", splitList.len())
+say.out("Split index 1:", splitList.get(1))
+
+say.out("Has 'Programming':", text.has("Programming"))
+say.out("Has 'Python':", text.has("Python"))
+say.out("Find 'Kode':", text.find("Kode"))
+say.out("Find 'None':", text.find("None"))
+
+say.out("Replace 'Programming' -> 'Language':", text.replace("Programming", "Language").trim())
+say.out("ReplaceFirst 'e' -> 'X':", "eee".replaceFirst("e", "X"))
+
+say.out("Char at 2:", text.trim().char(2))
+say.out("Slice 2 to 9:", text.trim().slice(2, 9))
+say.out("Slice 9 (optional end):", text.trim().slice(9))
+
+say.out("Repeat 'Hi' x3:", "Hi".repeat(3))
+say.out("Reverse 'stressed':", "stressed".reverse())
+
+say.out("Count 'o' in 'hello world':", "hello world".count("o"))
+say.out("Starts with '  Ani':", text.startsWith("  Ani"))
+say.out("Ends with 'ing  ':", text.endsWith("ing  "))
+say.out("Empty check (full):", text.empty())
+say.out("Empty check (empty):", "".empty())
+
+say.out("")
+say.out("--- 2. Mathematics Namespace Verification ---")
+say.out("math.pi:", math.pi)
+say.out("math.e:", math.e)
+say.out("math.abs(-10.5):", math.abs(-10.5))
+say.out("math.min(5, 10):", math.min(5, 10))
+say.out("math.max(5, 10):", math.max(5, 10))
+say.out("math.pow(2, 3):", math.pow(2, 3))
+say.out("math.sqrt(16):", math.sqrt(16))
+say.out("math.floor(10.8):", math.floor(10.8))
+say.out("math.ceil(10.2):", math.ceil(10.2))
+say.out("math.round(10.5):", math.round(10.5))
+say.out("math.sin(0):", math.sin(0))
+say.out("math.cos(0):", math.cos(0))
+say.out("math.tan(0):", math.tan(0))
+say.out("math.log(math.e):", math.log(math.e))
+say.out("math.log10(100):", math.log10(100))
+say.out("math.exp(1):", math.exp(1))
+say.out("math.clamp(15, 0, 10):", math.clamp(15, 0, 10))
+
+let r1 = math.random()
+let r2 = math.random(10, 20)
+say.out("math.random() [0-1]:", r1 >= 0 and r1 < 1)
+say.out("math.random(10, 20) range:", r2 >= 10 and r2 <= 20)
+
+say.out("")
+say.out("--- 3. Dictionary Methods Verification ---")
+let user = {
+  "name": "Ayush",
+  "role": "Admin",
+  "status": "Active"
+}
+say.out("Initial Dict len:", user.len())
+say.out("Dict has 'role':", user.has("role"))
+say.out("Dict has 'age':", user.has("age"))
+
+let keys = user.keys()
+say.out("Dict keys len:", keys.len())
+say.out("Keys contains 'name':", keys.has("name"))
+
+let values = user.values()
+say.out("Dict values len:", values.len())
+say.out("Values contains 'Admin':", values.has("Admin"))
+
+say.out("Remove status:", user.remove("status"))
+say.out("Dict len after remove:", user.len())
+say.out("Dict has 'status' after remove:", user.has("status"))
+
+user.clear()
+say.out("Dict len after clear:", user.len())
+
+say.out("")
+say.out("--- 4. Logical Boolean Extensions Verification ---")
+say.out("true implies true:", true implies true)
+say.out("true implies false:", true implies false)
+say.out("false implies true:", false implies true)
+say.out("false implies false:", false implies false)
+
+say.out("true iff true:", true iff true)
+say.out("true iff false:", true iff false)
+say.out("false iff true:", false iff true)
+say.out("false iff false:", false iff false)
+
+let boolList1 = [true, true, true]
+let boolList2 = [true, false, true]
+say.out("all(boolList1):", all(boolList1))
+say.out("all(boolList2):", all(boolList2))
+say.out("any(boolList1):", any(boolList1))
+say.out("any(boolList2):", any(boolList2))
+
+say.out("Verification complete! All features run successfully.")

@@ -1,0 +1,6 @@
+.build/
+node_modules/
+sample_output.txt
+*.exe
+*.o
+*.out

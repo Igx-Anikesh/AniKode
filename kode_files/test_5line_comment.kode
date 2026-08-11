@@ -1,0 +1,20 @@
+## Line 1 of python 5-line comment
+Line 2 of comment
+Line 3 of comment
+Line 4 of comment
+Line 5 of comment
+say.out("Python 5-line comment works!")
+
+/// Line 1 of JS 5-line comment
+Line 2 of comment
+Line 3 of comment
+Line 4 of comment
+Line 5 of comment
+say.out("JS 5-line comment works!")
+
+--- Line 1 of SQL 5-line comment
+Line 2 of comment
+Line 3 of comment
+Line 4 of comment
+Line 5 of comment
+say.out("SQL 5-line comment works!")

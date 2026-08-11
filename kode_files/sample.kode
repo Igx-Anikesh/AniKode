@@ -1,0 +1,26 @@
+~ Welcome to AniKode! ~
+~ This is a sample program. ~
+
+~ 1. Variables (Testing all three styles!) ~
+let x = 15
+set y to 25
+z = x + y
+
+say.out("--- Calculator Output ---")
+say.out("x is:")
+say.out(x)
+say.out("y is:")
+say.out(y)
+say.out("Sum of x and y:")
+say.out(z)
+
+~ 2. Control Flow (Conditions) ~
+if z > 30 {
+  say.out("Wow, the sum is greater than 30!")
+} else {
+  say.out("The sum is small.")
+}
+
+~ 3. Interactive Input ~
+let name = say.in("What is your name? ")
+say.out("Hello ", name, ", welcome to AniKode!")

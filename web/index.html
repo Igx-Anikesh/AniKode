@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AniKode Playground - Run Custom Language in Browser</title>
+  <meta name="description" content="AniKode is a high-performance, simple, and safe programming language. Try writing loops, recursive nesting dolls, and list iteration directly in your web browser.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header>
+    <div class="logo">
+      AniKode <span>.kode</span>
+    </div>
+    <div class="version">v1.0.0 (Refactored)</div>
+  </header>
+
+  <!-- Main Body Grid Container -->
+  <main>
+    <!-- Left Sidebar: Documentation -->
+    <section class="sidebar" id="documentation">
+      <h2>Documentation</h2>
+
+      <div class="doc-section">
+        <h3>1. Comments</h3>
+        <p>Comments are ignored by the compiler. AniKode has three simplified styles:</p>
+        <div class="syntax-card">~ Standard Single Line comment<br>\ Documentation Single Line comment</div>
+        <div class="syntax-card">--<br>Multi-line block comment<br>--</div>
+        <div class="syntax-card">#3#<br>say.out("A")<br>say.out("B")<br>say.out("C")<br><span>Disables the next 3 statements. Resilient to edits inside!</span></div>
+      </div>
+
+      <div class="doc-section">
+        <h3>2. Variables & Casting</h3>
+        <p>Declare variables and convert strings to numbers using casting functions:</p>
+        <div class="syntax-card">let x = 10<br>set y to 25<br>z = x + y</div>
+        <div class="syntax-card">let val = int(say.in("Value: "))<br>let rawStr = str(100)<br>let decimal = float("3.14")<br>let empty = null</div>
+      </div>
+
+      <div class="doc-section">
+        <h3>3. Inputs & Outputs</h3>
+        <p>Display messages or request synchronous key input from the user:</p>
+        <div class="syntax-card">say.out("User", name, "is", age, "years old.")<br>let name = say.in("Your name? ")</div>
+      </div>
+
+      <div class="doc-section">
+        <h3>4. Loops</h3>
+        <p>Iterate safely. Loops are protected from infinite-loop glitches!</p>
+        <div class="syntax-card">loop i from 1 to 5 {<br>&nbsp;&nbsp;say.out(i)<br>}<br><span>(Range Loop - Auto counts up/down)</span></div>
+        <div class="syntax-card">each fruit in fruits {<br>&nbsp;&nbsp;say.out(fruit)<br>}<br><span>(Collection Loop - JS Array iteration)</span></div>
+      </div>
+
+      <div class="doc-section">
+        <h3>5. Functions & Recursion</h3>
+        <p>Define reusable code and recurse safely without repeating names:</p>
+        <div class="syntax-card">fn openDoll(size) {<br>&nbsp;&nbsp;if size == 1 {<br>&nbsp;&nbsp;&nbsp;&nbsp;return "Prize!"<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;return recurse(size - 1)<br>}</div>
+      </div>
+    </section>
+
+    <!-- Right Side: Editor & Output -->
+    <section class="playground">
+      
+      <!-- Top controls bar -->
+      <div class="controls-bar">
+        <div class="examples-group">
+          <button class="btn-example active" id="btn-example-calculator" onclick="loadExample('calculator')">Calculator</button>
+          <button class="btn-example" id="btn-example-loops" onclick="loadExample('loops')">Range Loops</button>
+          <button class="btn-example" id="btn-example-each" onclick="loadExample('each')">Each Loop (Arrays)</button>
+          <button class="btn-example" id="btn-example-nesting_dolls" onclick="loadExample('nesting_dolls')">Nesting Dolls (Recursion)</button>
+        </div>
+        
+        <div class="action-buttons">
+          <button class="btn btn-clear" onclick="clearTerminal()">Clear Output</button>
+          <button class="btn btn-run" onclick="compileAndRun()">Compile & Run Code</button>
+        </div>
+      </div>
+
+      <!-- Editor + Terminal Split Frame -->
+      <div class="workspace">
+        <!-- Code Editor Panel -->
+        <div class="panel-container">
+          <div class="panel-header">
+            <div class="panel-title">
+              Code Editor
+            </div>
+            <div class="panel-badge">main.kode</div>
+          </div>
+          <textarea id="code-editor" class="editor-textarea" spellcheck="false" placeholder="Write your AniKode code here..."></textarea>
+        </div>
+
+        <!-- Terminal Output Panel -->
+        <div class="panel-container">
+          <div class="panel-header">
+            <div class="panel-title">
+              Interactive Terminal Output
+            </div>
+            <div class="panel-badge">console</div>
+          </div>
+          <div id="terminal-output" class="terminal-body">
+            <div class="terminal-welcome">
+              Welcome to the AniKode Online Playground v1.0.0.<br>
+              Press "Compile & Run" to execute your program.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Reference Info -->
+      <footer id="footer">
+        AniKode compiler transpiles to high-performance JavaScript running natively in V8/Browser sandboxes.
+      </footer>
+    </section>
+  </main>
+
+  <!-- Load Compiler scripts (browser-compatible) -->
+  <script src="lexer.js"></script>
+  <script src="parser.js"></script>
+  <script src="codegen.js"></script>
+  <!-- Load Web Playground Glue Code -->
+  <script src="app.js"></script>
+</body>
+</html>

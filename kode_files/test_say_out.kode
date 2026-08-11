@@ -1,0 +1,7 @@
+\ Test Multi-Argument say.out Printing \
+let age = 20
+let name = "Ayush"
+
+say.out("User", name, "is", age, "years old.")
+say.out("Direct numbers and math:", 10, 20 + 30, "worked!")
+say.out("Without parens:", "Name:", name, "Age:", age)

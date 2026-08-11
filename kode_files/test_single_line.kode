@@ -1,0 +1,8 @@
+\ This is a single-line comment using backslash
+~ This is a single-line comment using tilde
+
+let x = 40 \ Setting x to 40
+let y = 60 ~ Setting y to 60
+
+say.out("The sum is:")
+say.out(x + y) \ Should print 100
