@@ -1,7 +1,7 @@
 {
-  "cleanUrls": true,
-  "rewrites": [
-    { "source": "/", "destination": "/web/index.html" },
-    { "source": "/(.*)", "destination": "/web/$1" }
-  ]
+  "version": 2,
+  "buildCommand": "",
+  "installCommand": "",
+  "framework": null,
+  "outputDirectory": "web"
 }
