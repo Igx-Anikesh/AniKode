@@ -1,0 +1,8 @@
+~ AniKode Custom Library ~
+fn doubleValue(x) {
+  return x * 2
+}
+
+fn addThree(x) {
+  return x + 3
+}

@@ -106,9 +106,23 @@ fn factorial(n) {
 }
 ```
 
+## 📂 6. Modular File Imports (`import`)
+
+AniKode supports modular programming by allowing files to import code from other files dynamically during compilation.
+
+### Syntax
+```kode
+import "path/to/module.kode"
+```
+
+### Compiler Behavior
+* **AST-Level Inlining:** During compilation, the parser reads the imported file, parses its contents into AST nodes, and recursively inlines them into the parent AST where the `import` statement was found.
+* **Cyclic Import Protection:** The compiler tracks already imported file paths. If a cyclic import loop is detected (e.g. `A` imports `B`, and `B` imports `A`), the compiler ignores the duplicate import to prevent infinite loop crashes.
+* **V8 Browser Playground Simulation:** In the web playground, the compiler looks up imported paths from a virtual workspace (pre-loaded file dictionary), making imports 100% functional in the web browser.
+
 ---
 
-## 📥 6. Input / Output & Type Casting
+## 📥 7. Input / Output & Type Casting
 
 ### Comma-Separated Output (`say.out`)
 `say.out` accepts multiple arguments separated by commas. It prints them natively separated by spaces:
@@ -130,7 +144,7 @@ Since `say.in` returns raw string inputs, AniKode provides three casting functio
 
 ---
 
-## ⚙️ 7. Compiler Backend Code Generation
+## ⚙️ 8. Compiler Backend Code Generation
 
 ### A. JavaScript Backend (`codegen.js`)
 * Maps AniKode AST straight to standard JS equivalents.
@@ -143,7 +157,7 @@ Since `say.in` returns raw string inputs, AniKode provides three casting functio
 
 ---
 
-## 🛠️ 8. CLI Runner Commands
+## 🛠️ 9. CLI Runner Commands
 
 You can run AniKode programs using the global `anikode` command:
 

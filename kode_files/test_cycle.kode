@@ -1,0 +1,2 @@
+import "./cycle_a.kode"
+say.out("Test cycle completed successfully")

@@ -1,0 +1,6 @@
+import "./test_lib.kode"
+
+let val = 5
+say.out("Original:", val)
+say.out("Doubled:", doubleValue(val))
+say.out("Plus Three:", addThree(val))

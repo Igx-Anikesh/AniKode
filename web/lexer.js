@@ -23,6 +23,7 @@
     RECURSE: 'RECURSE',
     EACH: 'EACH',
     IN: 'IN',
+    IMPORT: 'IMPORT',
     
     // Logical Operators
     AND: 'AND',
@@ -100,6 +101,7 @@
     'recurse': TokenType.RECURSE,
     'each': TokenType.EACH,
     'in': TokenType.IN,
+    'import': TokenType.IMPORT,
     
     // Logical
     'and': TokenType.AND,

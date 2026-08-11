@@ -53,12 +53,14 @@
   };
 
   class Parser {
-    constructor(lexer) {
+    constructor(lexer, currentFile = '') {
       this.lexer = lexer;
+      this.currentFile = currentFile;
       this.curToken = null;   // The token we are currently checking
       this.peekToken = null;  // The next token in line
       this.errors = [];       // List of grammatical errors we find
       this.disableCount = 0;   // Tracks statement disabling (#N#)
+      this.visitedFiles = new Set();
 
       // Read the first two tokens to populate curToken and peekToken
       this.nextToken();
@@ -96,7 +98,11 @@
       while (this.curToken.type !== TokenType.EOF) {
         let stmt = this.parseStatement();
         if (stmt !== null) {
-          program.statements.push(stmt);
+          if (Array.isArray(stmt)) {
+            program.statements.push(...stmt);
+          } else {
+            program.statements.push(stmt);
+          }
         }
         this.nextToken();
       }
@@ -142,6 +148,9 @@
         case TokenType.THROW:
           stmt = this.parseThrowStatement();
           break;
+        case TokenType.IMPORT:
+          stmt = this.parseImportStatement();
+          break;
         case TokenType.IDENTIFIER:
           stmt = this.parseExpressionStatement();
           break;
@@ -151,8 +160,19 @@
       }
 
       if (stmt !== null && this.disableCount > 0) {
-        stmt.disabled = true;
-        this.disableCount--;
+        if (Array.isArray(stmt)) {
+          for (let s of stmt) {
+            if (this.disableCount > 0) {
+              s.disabled = true;
+              this.disableCount--;
+            } else {
+              break;
+            }
+          }
+        } else {
+          stmt.disabled = true;
+          this.disableCount--;
+        }
       }
 
       return stmt;
@@ -575,7 +595,11 @@
       while (this.curToken.type !== TokenType.RBRACE && this.curToken.type !== TokenType.EOF) {
         let stmt = this.parseStatement();
         if (stmt !== null) {
-          block.statements.push(stmt);
+          if (Array.isArray(stmt)) {
+            block.statements.push(...stmt);
+          } else {
+            block.statements.push(stmt);
+          }
         }
         this.nextToken();
       }
@@ -586,6 +610,136 @@
       }
 
       return block;
+    }
+
+    // Parses import statements: import "path"
+    parseImportStatement() {
+      this.nextToken(); // Move past 'import'
+      if (this.curToken.type !== TokenType.STRING) {
+        this.errors.push(`Line ${this.curToken.line}: Expected string literal after 'import', found '${this.curToken.literal}'`);
+        return null;
+      }
+      let importPath = this.curToken.literal;
+      
+      let resolvedPath = importPath;
+      let fileContent = "";
+      
+      if (typeof require !== 'undefined') {
+        const fs = require('fs');
+        const path = require('path');
+        
+        try {
+          let currentDir = process.cwd();
+          if (this.currentFile) {
+            currentDir = path.dirname(this.currentFile);
+          }
+          resolvedPath = path.resolve(currentDir, importPath);
+          
+          if (!this.visitedFiles) {
+            this.visitedFiles = new Set();
+          }
+          if (this.currentFile) {
+            this.visitedFiles.add(path.resolve(this.currentFile));
+          }
+          
+          let absPath = path.resolve(resolvedPath);
+          if (this.visitedFiles.has(absPath)) {
+            // Already imported, return empty list of statements to skip
+            return [];
+          }
+          
+          if (!fs.existsSync(absPath)) {
+            this.errors.push(`Line ${this.curToken.line}: Imported file not found: '${importPath}' (Resolved: '${absPath}')`);
+            return null;
+          }
+          
+          fileContent = fs.readFileSync(absPath, 'utf8');
+          
+          const nextVisited = new Set(this.visitedFiles);
+          nextVisited.add(absPath);
+          
+          const { Lexer } = require('./lexer');
+          const subLexer = new Lexer(fileContent);
+          const subParser = new Parser(subLexer, absPath);
+          subParser.visitedFiles = nextVisited;
+          
+          const subProgram = subParser.parseProgram();
+          if (subParser.errors.length > 0) {
+            this.errors.push(...subParser.errors);
+            return null;
+          }
+          
+          return subProgram.statements;
+          
+        } catch (err) {
+          this.errors.push(`Line ${this.curToken.line}: Error reading imported file '${importPath}': ${err.message}`);
+          return null;
+        }
+      } else {
+        // Browser environment
+        let currentFileDir = "";
+        if (this.currentFile) {
+          let parts = this.currentFile.split('/');
+          parts.pop();
+          currentFileDir = parts.join('/');
+        }
+        
+        if (currentFileDir) {
+          if (importPath.startsWith('./')) {
+            resolvedPath = currentFileDir + '/' + importPath.slice(2);
+          } else if (importPath.startsWith('../')) {
+            let baseParts = currentFileDir.split('/');
+            let importParts = importPath.split('/');
+            while (importParts[0] === '..') {
+              baseParts.pop();
+              importParts.shift();
+            }
+            resolvedPath = baseParts.concat(importParts).join('/');
+          } else if (!importPath.startsWith('/')) {
+            resolvedPath = currentFileDir + '/' + importPath;
+          }
+        }
+        
+        // Remove duplicate / or leading ./ from resolvedPath for simple lookup
+        resolvedPath = resolvedPath.replace(/^\.\//, '');
+
+        const vfs = window.__anikode_virtual_fs || {};
+        if (!vfs[resolvedPath] && vfs[importPath]) {
+          resolvedPath = importPath; // Fallback to raw string if exact resolved is not found
+        }
+        
+        if (!vfs[resolvedPath]) {
+          this.errors.push(`Line ${this.curToken.line}: Imported file not found in virtual workspace: '${importPath}' (Resolved: '${resolvedPath}')`);
+          return null;
+        }
+        
+        fileContent = vfs[resolvedPath];
+        
+        if (!this.visitedFiles) {
+          this.visitedFiles = new Set();
+        }
+        if (this.currentFile) {
+          this.visitedFiles.add(this.currentFile);
+        }
+        if (this.visitedFiles.has(resolvedPath)) {
+          return [];
+        }
+        
+        const nextVisited = new Set(this.visitedFiles);
+        nextVisited.add(resolvedPath);
+        
+        const subLexer = new window.Lexer(fileContent);
+        const subParser = new Parser(subLexer, resolvedPath);
+        subParser.visitedFiles = nextVisited;
+        
+        const subProgram = subParser.parseProgram();
+        if (subParser.errors.length > 0) {
+          this.errors.push(...subParser.errors);
+          return null;
+        }
+        
+        return subProgram.statements;
+      }
     }
 
     // Standard wrapper for standalone expression statements

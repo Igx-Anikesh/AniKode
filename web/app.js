@@ -1,5 +1,26 @@
+// Virtual Filesystem for Browser Playground
+window.__anikode_virtual_fs = {
+  "math_utils.kode": `\\ Preloaded AniKode library \\
+fn add(a, b) {
+  return a + b
+}
+
+fn subtract(a, b) {
+  return a - b
+}`
+};
+
 // Playground Code Templates
 const EXAMPLES = {
+  imports: `\\ Modular Imports Example \\
+import "math_utils.kode"
+
+let a = 15
+let b = 30
+say.out("--- IMPORTS DEMO ---")
+say.out("Using function 'add' from 'math_utils.kode':")
+say.out("add(15, 30) =", add(a, b))`,
+
   calculator: `\\ AniKode Calculator & Variables \\
 let x = 100
 set y to 250

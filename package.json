@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test-lexer": "node test_lexer.js",
-    "test-parser": "node test_parser.js"
+    "test-parser": "node test_parser.js",
+    "test-imports": "node tests/test_imports.js"
   },
   "keywords": [
     "anikode",

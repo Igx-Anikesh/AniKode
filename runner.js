@@ -124,7 +124,7 @@ try {
   const lexer = new Lexer(sourceCode);
   
   // B. Parsing
-  const parser = new Parser(lexer);
+  const parser = new Parser(lexer, absolutePath);
   const ast = parser.parseProgram();
 
   // C. Syntax Errors Check

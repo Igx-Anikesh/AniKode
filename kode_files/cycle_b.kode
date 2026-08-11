@@ -1,0 +1,5 @@
+import "./cycle_a.kode"
+say.out("Cycle B loaded")
+fn funcB() {
+  say.out("funcB")
+}
