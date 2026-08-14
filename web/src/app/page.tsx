@@ -69,6 +69,29 @@ say.out("Fibonacci(10) =", result) ~ 55 ~`;
                 Playground →
               </a>
             </div>
+
+            {/* Small subtle text link for older versions */}
+            <div style={{ marginTop: '-16px' }}>
+              <a
+                href={SITE_CONFIG.links.releases}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  fontSize: '12px',
+                  color: 'var(--outline)',
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  transition: 'color 0.2s',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.color = 'var(--primary)'}
+                onMouseLeave={(e) => e.currentTarget.style.color = 'var(--outline)'}
+              >
+                <span>See other versions &amp; release notes</span>
+                <ArrowRight size={12} />
+              </a>
+            </div>
           </div>
 
           {/* Hero Code Snippet */}
