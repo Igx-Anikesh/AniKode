@@ -11,7 +11,9 @@
     "test-parser": "node test_parser.js",
     "test-imports": "node tests/test_imports.js",
     "bundle": "npx esbuild runner.js --bundle --platform=node --outfile=dist/anikode-bundle.js",
-    "build": "powershell -ExecutionPolicy Bypass -File build-exe.ps1"
+    "build:exe": "powershell -ExecutionPolicy Bypass -File build-exe.ps1",
+    "build": "cd web && npm install && npm run build",
+    "start": "cd web && npm start"
   },
   "keywords": [
     "anikode",
