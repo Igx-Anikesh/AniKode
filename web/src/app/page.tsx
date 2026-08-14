@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Zap, ShieldCheck, Boxes, Copy, Check, Download, ArrowRight, Play, Terminal } from 'lucide-react';
+import { SITE_CONFIG } from '@/lib/config';
 
 export default function HomePage() {
   const [copiedCode, setCopiedCode] = useState(false);
@@ -54,7 +55,11 @@ say.out("Fibonacci(10) =", result) ~ 55 ~`;
             </div>
 
             <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '16px' }}>
-              <a href="#downloads" className="btn-primary-action">
+              <a
+                href={SITE_CONFIG.links.directDownloadExe}
+                download="anikode.exe"
+                className="btn-primary-action"
+              >
                 Download AniKode
               </a>
               <a href="/docs" className="btn-secondary-action">
@@ -230,19 +235,42 @@ say.out("Fibonacci(10) =", result) ~ 55 ~`;
             <code>npm install -g anikode</code>
           </div>
 
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginTop: '8px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginTop: '8px', justifyContent: 'center' }}>
             <a
-              href="https://github.com/Igx-Anikesh/AniKode/releases"
-              target="_blank"
-              rel="noreferrer"
+              href={SITE_CONFIG.links.directDownloadExe}
+              download="anikode.exe"
               className="btn-primary-action"
+              style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
             >
               <Download size={16} />
-              <span>Download Standalone .exe</span>
+              <span>Download Standalone .exe (v1.0.0)</span>
             </a>
             <a href="/sandbox" className="btn-secondary-action">
               <Play size={16} />
               <span>Open Web Playground</span>
+            </a>
+          </div>
+
+          {/* Secondary Link for All Versions */}
+          <div style={{ marginTop: '8px' }}>
+            <a
+              href={SITE_CONFIG.links.releases}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-body-sm"
+              style={{
+                color: 'var(--on-surface-variant)',
+                textDecoration: 'none',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                transition: 'color 0.2s',
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.color = 'var(--primary)'}
+              onMouseLeave={(e) => e.currentTarget.style.color = 'var(--on-surface-variant)'}
+            >
+              <span>View all releases &amp; changelogs on GitHub</span>
+              <ArrowRight size={14} />
             </a>
           </div>
         </div>

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
+import { SITE_CONFIG } from '@/lib/config';
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -83,7 +84,8 @@ export default function Navbar() {
         {/* Trailing Action */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <a
-            href="/#downloads"
+            href={SITE_CONFIG.links.directDownloadExe}
+            download="anikode.exe"
             className="btn-primary-action"
             style={{
               padding: '8px 16px',

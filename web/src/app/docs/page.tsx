@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Info, 
   Download, 
@@ -21,7 +21,8 @@ import {
   FileCode,
   FunctionSquare,
   Sparkles,
-  HelpCircle
+  HelpCircle,
+  ListFilter
 } from 'lucide-react';
 
 interface DocSection {
@@ -33,6 +34,7 @@ interface DocSection {
   code: string;
   output?: string;
   notes?: string[];
+  tabs?: { label: string; code: string }[];
 }
 
 interface DocTopic {
@@ -55,52 +57,139 @@ const COMPLETE_DOCS: DocTopic[] = [
     icon: Info,
     description: 'AniKode is a dual-target, developer-first programming language designed to unite the expressive simplicity of dynamic scripting with native C++20 machine speed, mathematical propositional logic, and glitch-proof control flow.',
     featuresTitle: 'Core Language Architecture',
-    featuresDesc: 'AniKode features a modular Lexer, Recursive Descent AST Parser, and twin code generators (JavaScript VM & C++20 Native).',
+    featuresDesc: 'AniKode features a modular Lexer, Recursive Descent AST Parser, and twin execution targets (JavaScript V8 VM & C++20 Native).',
     bulletPoints: [
       'Dual Engine: Run instantaneously in the browser / JS VM, or compile to native C++20 machine binaries with 0.003s startup.',
-      'Propositional Logic: Native operators (implies, iff, xor, all, any) treat boolean algebra as first-class citizens.',
+      'Propositional Logic: Native operators (implies, iff, xor, nand, nor, xnor, all, any) treat boolean algebra as first-class citizens.',
       'Deterministic Loops: Range loops (loop i from 1 to N) compute bounds at invocation, preventing infinite lockups.',
       'AST Disabler: #N# annotations cleanly disable the next N AST statements without syntax corruption.',
     ],
     sections: [
       {
-        id: 'getting-started-install',
-        title: 'Installation & Quickstart',
-        description: 'Install the global CLI via npm or download the zero-dependency Windows standalone binary (anikode.exe):',
+        id: 'overview-philosophy',
+        title: 'Why AniKode Was Created',
+        description: 'Traditional scripting languages often sacrifice raw performance and lack native tools for formal logic, while low-level systems languages require heavy boilerplate for simple scripts. AniKode bridges this gap by providing an intuitive syntax that compiles directly to optimized C++20 machine code or runs instantly in a lightweight sandbox.',
+        codeLang: 'philosophy.kode',
+        code: `~ Expressive yet blazing fast ~
+fn verifyAccess(isAdmin, is2FA, score) {
+    return (isAdmin implies is2FA) and (score >= 50)
+}
+
+let userAllowed = verifyAccess(true, true, 85)
+say.out("Access Granted:", userAllowed)  ~ Output: true ~`,
+        output: '// Instant execution: 1.2ms (JS VM) | 0.003s (C++20 Native Machine Binary)'
+      }
+    ]
+  },
+  {
+    id: 'installation',
+    category: 'Getting Started',
+    title: 'Installation & Setup',
+    icon: Download,
+    description: 'There are two primary ways to install and run AniKode on your machine: via the global package manager CLI (recommended for all platforms) or by downloading the standalone Windows binary with zero external dependencies.',
+    featuresTitle: 'Choose Your Installation Method',
+    featuresDesc: 'AniKode is distributed as a global CLI package and as a self-contained native executable.',
+    bulletPoints: [
+      'Method 1 (Recommended): Package Manager CLI (npm, pnpm, yarn, bun) for cross-platform compatibility.',
+      'Method 2: Standalone Windows Executable (.exe) requiring zero node/runtime dependencies.',
+      'Method 3: Optional C++20 Toolchain (GCC/Clang/MSVC) for building standalone native machine binaries.',
+    ],
+    sections: [
+      {
+        id: 'method-cli',
+        title: 'Method 1: Package Manager CLI (Recommended)',
+        description: 'The easiest way to install AniKode globally is using your preferred JavaScript package manager. This automatically adds the `anikode` command to your system terminal path:',
         syntax: 'npm install -g anikode',
         codeLang: 'bash',
-        code: `# Install via npm globally
-npm install -g anikode
-
-# Verify version
-anikode --version
-# Output: AniKode v1.0.0 (x64)
-
-# Run an AniKode script
-anikode run main.kode
-
-# Compile to native C++ binary
-anikode build main.kode -o app.exe`,
-        output: '# Output: Compiled app.exe (Native C++20 Machine Binary in 0.12s)',
+        code: 'npm install -g anikode',
+        tabs: [
+          { label: 'npm', code: 'npm install -g anikode' },
+          { label: 'pnpm', code: 'pnpm add -g anikode' },
+          { label: 'yarn', code: 'yarn global add anikode' },
+          { label: 'bun', code: 'bun add -g anikode' },
+        ],
         notes: [
-          'Requirements for JS mode: Node.js 18+ (zero other dependencies).',
-          'Requirements for C++ mode: Any C++20 compiler (g++, clang++, or MSVC cl.exe).'
+          'Requires Node.js 18.0.0 or later installed on your machine.',
+          'Installs the official runner, lexer, parser, code generator, and C++ transpiler.'
         ]
       },
       {
-        id: 'first-program',
-        title: 'Your First Program (main.kode)',
-        description: 'Write, inspect, and run a complete AniKode program with variables, functions, and standard output:',
-        syntax: 'fn main() { ... }',
+        id: 'method-standalone',
+        title: 'Method 2: Standalone Windows Binary (Zero-Dependency)',
+        description: 'If you do not have Node.js or want a portable executable with 0% runtime overhead, install the standalone binary:',
+        syntax: 'irm https://.../install.ps1 | iex',
+        codeLang: 'powershell',
+        code: `# Automated 1-Liner PowerShell Installer:
+irm https://raw.githubusercontent.com/Igx-Anikesh/AniKode/main/install.ps1 | iex
+
+# Direct 1-Click Binary Download:
+# https://github.com/Igx-Anikesh/AniKode/releases/latest/download/anikode.exe
+
+# View All Releases & Changelogs:
+# https://github.com/Igx-Anikesh/AniKode/releases`,
+        output: '# Automatically downloads anikode.exe to $HOME/bin and updates PATH.',
+        notes: [
+          'Packaged via Node.js Single Executable Application (SEA).',
+          'Runs on Windows x64 out of the box with zero external dependencies.'
+        ]
+      },
+      {
+        id: 'verify-installation',
+        title: 'Verify Your Installation',
+        description: 'Once installed, open a new terminal window and verify that the `anikode` binary is accessible:',
+        syntax: 'anikode --version',
+        codeLang: 'bash',
+        code: 'anikode --version\n# Output: AniKode v1.0.0 (x64)',
+        output: 'AniKode v1.0.0 (x64)'
+      },
+      {
+        id: 'project-structure',
+        title: 'Standard Project Structure',
+        description: 'After installing, initialize your workspace with the recommended AniKode directory hierarchy:',
+        syntax: 'Directory Layout',
+        codeLang: 'text',
+        code: `my-anikode-project/
+├── kode_files/             ~ Source code files (.kode) ~
+│   ├── main.kode           ~ Application entry point ~
+│   ├── math_utils.kode     ~ Custom functions & math ~
+│   └── security.kode       ~ Propositional logic rules ~
+├── dist/                   ~ Compiled native binaries ~
+│   └── app.exe             ~ Machine executable (0.003s startup) ~
+├── package.json            ~ Optional npm metadata ~
+└── README.md`,
+        notes: [
+          'All AniKode source files should use the .kode extension.',
+          'Native compiled C++ executables are output to the dist/ directory by default.'
+        ]
+      },
+      {
+        id: 'first-program-steps',
+        title: 'Step-by-Step: Your First Program',
+        description: 'Follow these 4 steps to create and run your first AniKode program from scratch:',
+        syntax: 'anikode run main.kode',
         codeLang: 'main.kode',
-        code: `~ First AniKode Program ~
-fn greet(user) {
-    say.out("👋 Hello,", user, "welcome to AniKode!")
+        code: `~ Step 1: Create main.kode and write your code ~
+fn calculateScore(base, multiplier) {
+    return base * multiplier
 }
 
-let developer = "Ayush"
-greet(developer)`,
-        output: '// Output: 👋 Hello, Ayush welcome to AniKode!'
+fn main() {
+    let username = "Developer"
+    set totalScore to calculateScore(100, 1.5)
+    
+    say.out("👋 Welcome,", username)
+    say.out("Your Final Score:", totalScore)
+}
+
+main()`,
+        output: `// Step 2: Run via CLI in instant JS VM mode:
+$ anikode run main.kode
+👋 Welcome, Developer
+Your Final Score: 150
+
+// Step 3 (Optional): Compile to native C++20 machine binary:
+$ anikode build main.kode -o app.exe
+Compiled app.exe (Native C++20 Machine Binary in 0.12s)`
       }
     ]
   },
@@ -109,20 +198,23 @@ greet(developer)`,
     category: 'Language Grammar',
     title: 'Comments & #N# Disablers',
     icon: Sparkles,
-    description: 'AniKode provides flexible comment delimiters (tilde and double backslash) as well as the unique #N# AST statement disabler.',
+    description: 'AniKode provides 5 flexible comment formats as well as the unique #N# AST statement disabler.',
     featuresTitle: 'Comment Delimiters & AST Disablers',
     featuresDesc: 'Unlike standard line comments, AniKode provides block-safe delimiters and a numerical AST skip system for rapid debugging.',
     bulletPoints: [
       'Tilde Comments: ~ single or multi-line comment ~',
       'Backslash Comments: \\ single or multi-line comment \\',
+      'Double Hyphen: -- block comment --',
+      'Double Slash: // single line //',
+      'Hash: # block or line #',
       'Statement Disabler: #N# disables exactly the next N statements at the AST level.',
     ],
     sections: [
       {
         id: 'comment-styles',
-        title: 'Tilde & Backslash Comments',
-        description: 'Both single-line and multi-line comments can use either ~ or \\ delimiters:',
-        syntax: '~ comment ~ or \\ comment \\',
+        title: 'Comment Formats',
+        description: 'Both single-line and multi-line comments can use tilde, backslash, or traditional delimiters:',
+        syntax: '~ comment ~ | \\ comment \\ | -- comment -- | // comment',
         codeLang: 'comments.kode',
         code: `~ This is a single-line tilde comment ~
 let score = 100
@@ -239,13 +331,16 @@ say.out("Type of array:", type([1, 2, 3]))`,
     category: 'Logic Programming',
     title: 'Operators & Propositional Logic',
     icon: Cpu,
-    description: 'AniKode integrates classical arithmetic and boolean logic alongside first-class Propositional Logic rules (implies, iff, xor, all, any).',
+    description: 'AniKode integrates classical arithmetic and boolean logic alongside first-class Propositional Logic rules (implies, iff, xor, nand, nor, xnor, all, any).',
     featuresTitle: 'Propositional Logic Calculus',
-    featuresDesc: 'Formulate security policies, mathematical proofs, and business constraints with standard mathematical operators.',
+    featuresDesc: 'Formulate security policies, mathematical proofs, circuit simulation, and business constraints with standard mathematical operators.',
     bulletPoints: [
       'implies (→): Material implication (p implies q ≡ not p or q)',
       'iff (↔): Logical biconditional equivalence (p iff q ≡ p == q)',
       'xor (⊕): Exclusive disjunction (either p or q, not both)',
+      'nand (⊼): Negated AND (not (p and q))',
+      'nor (⊽): Negated OR (not (p or q))',
+      'xnor (⊙): Negated XOR / Equivalence (not (p xor q))',
       'all & any: Universal and existential array quantifiers',
     ],
     sections: [
@@ -270,34 +365,41 @@ say.out("Boolean Condition:", isGreater)`,
       },
       {
         id: 'propositional-logic-rules',
-        title: 'Propositional Logic (implies, iff, xor)',
+        title: 'Propositional Logic Gates (implies, iff, xor, nand, nor, xnor)',
         description: 'Perform formal verification directly in code without helper functions:',
-        syntax: '<expr> implies <expr> | <expr> iff <expr> | <expr> xor <expr>',
+        syntax: 'p implies q | p iff q | p xor q | p nand q | p nor q | p xnor q',
         codeLang: 'logic.kode',
-        code: `~ Implication: If admin is true, then 2FA must be true ~
+        code: `~ Implication (implies): If admin is true, 2FA must be true ~
 fn checkPolicy(isAdmin, is2FA) {
     return isAdmin implies is2FA
 }
+say.out("Admin + 2FA:", checkPolicy(true, true))       ~ true ~
+say.out("Admin + No 2FA:", checkPolicy(true, false))  ~ false ~
 
-say.out("Admin + 2FA (true implies true):", checkPolicy(true, true))       ~ true ~
-say.out("Admin + No 2FA (true implies false):", checkPolicy(true, false))  ~ false ~
-say.out("Non-admin (false implies false):", checkPolicy(false, false))     ~ true ~
+~ Biconditional (iff): Both sides have equal truth ~
+say.out("Biconditional:", true iff true)               ~ true ~
 
-~ Biconditional (iff): Both sides must match truth values ~
-let statusA = true
-let statusB = true
-say.out("Equivalence:", statusA iff statusB) ~ true ~
+~ Exclusive OR (xor): Exactly one is true ~
+say.out("XOR (true xor false):", true xor false)       ~ true ~
+say.out("XOR (true xor true):", true xor true)         ~ false ~
 
-~ Exclusive OR (xor): Exactly one must be true ~
-say.out("XOR Test (true xor false):", true xor false)   ~ true ~
-say.out("XOR Test (true xor true):", true xor true)     ~ false ~`,
+~ NAND: True unless both are true ~
+say.out("NAND (true nand true):", true nand true)       ~ false ~
+
+~ NOR: True only when both are false ~
+say.out("NOR (false nor false):", false nor false)     ~ true ~
+
+~ XNOR: True when inputs are identical ~
+say.out("XNOR (false xnor false):", false xnor false)  ~ true ~`,
         output: `// Output:
-// Admin + 2FA (true implies true): true
-// Admin + No 2FA (true implies false): false
-// Non-admin (false implies false): true
-// Equivalence: true
-// XOR Test (true xor false): true
-// XOR Test (true xor true): false`
+// Admin + 2FA: true
+// Admin + No 2FA: false
+// Biconditional: true
+// XOR (true xor false): true
+// XOR (true xor true): false
+// NAND (true nand true): false
+// NOR (false nor false): true
+// XNOR (false xnor false): true`
       },
       {
         id: 'quantifiers-all-any',
@@ -319,25 +421,159 @@ say.out("Any test passed:", any(hasFailures))`,
     ]
   },
   {
+    id: 'collections-api',
+    category: 'Collections & Methods',
+    title: 'Collections & Methods (Lists, Strings, Maps)',
+    icon: ListFilter,
+    description: 'AniKode provides built-in polymorphic methods for Lists, Strings, and Dictionaries without needing external libraries.',
+    featuresTitle: 'Built-in Polymorphic Methods',
+    featuresDesc: 'Methods work seamlessly across collections and strings with high-performance runtime execution.',
+    bulletPoints: [
+      'Polymorphic: .len(), .has(x), .remove(x), .clear(), .empty(), .replace(), .reverse(), .count(x)',
+      'List API: .add(), .insert(), .removeAt(), .pop(), .find(), .first(), .last(), .slice(), .sort(), .unique(), .swap(), .join()',
+      'String API: .upper(), .lower(), .trim(), .split(), .startsWith(), .endsWith(), .repeat()',
+      'Map API: .keys(), .values()',
+    ],
+    sections: [
+      {
+        id: 'polymorphic-methods',
+        title: 'Polymorphic Methods (.len, .has, .remove, .empty, .count)',
+        description: 'These methods adapt automatically whether invoked on a String, List, or Dictionary:',
+        syntax: 'obj.len() | obj.has(x) | obj.remove(x) | obj.empty() | obj.count(x)',
+        codeLang: 'polymorphic.kode',
+        code: `let strData = "Hello World"
+let listData = [10, 20, 30, 20, 40]
+let mapData = { "a": 1, "b": 2 }
+
+say.out("String Length:", strData.len())            ~ 11 ~
+say.out("List Length:", listData.len())              ~ 5 ~
+say.out("Map Length:", mapData.len())                ~ 2 ~
+
+say.out("String has 'World':", strData.has("World")) ~ true ~
+say.out("List has 20:", listData.has(20))            ~ true ~
+say.out("Map has key 'a':", mapData.has("a"))        ~ true ~
+
+say.out("Count 20 in list:", listData.count(20))     ~ 2 ~
+say.out("Count 'l' in string:", strData.count("l"))  ~ 3 ~`,
+        output: `// Output:
+// String Length: 11
+// List Length: 5
+// Map Length: 2
+// String has 'World': true
+// List has 20: true
+// Map has key 'a': true
+// Count 20 in list: 2
+// Count 'l' in string: 3`
+      },
+      {
+        id: 'list-methods',
+        title: 'List Methods (.add, .pop, .sort, .unique, .slice, .swap)',
+        description: 'Comprehensive manipulation functions for arrays and collections:',
+        syntax: 'list.add(val) | list.pop() | list.sort() | list.unique() | list.slice(s, e) | list.join(sep)',
+        codeLang: 'lists.kode',
+        code: `let items = [5, 2, 8, 1, 9, 2, 8]
+
+items.add(10)                           ~ Appends 10 ~
+say.out("After Add:", items)
+
+let sortedItems = items.sort()          ~ Returns sorted copy ~
+say.out("Sorted:", sortedItems)
+
+let uniqueItems = items.unique()        ~ Removes duplicates ~
+say.out("Unique:", uniqueItems)
+
+say.out("First Item:", items.first())   ~ First element ~
+say.out("Last Item:", items.last())     ~ Last element ~
+
+let sliced = items.slice(1, 4)          ~ Sub-slice from 1 to 4 ~
+say.out("Slice [1..4]:", sliced)
+
+items.swap(0, 1)                        ~ Swaps elements at index 0 and 1 ~
+say.out("After Swap(0, 1):", items)
+
+let joinedStr = ["AniKode", "is", "fast"].join(" ")
+say.out("Joined:", joinedStr)`,
+        output: `// Output:
+// After Add: [5, 2, 8, 1, 9, 2, 8, 10]
+// Sorted: [1, 2, 2, 5, 8, 8, 9, 10]
+// Unique: [5, 2, 8, 1, 9, 10]
+// First Item: 5
+// Last Item: 10
+// Slice [1..4]: [2, 8, 1]
+// After Swap(0, 1): [2, 5, 8, 1, 9, 2, 8, 10]
+// Joined: AniKode is fast`
+      },
+      {
+        id: 'string-methods',
+        title: 'String Methods (.upper, .lower, .trim, .split, .startsWith, .endsWith)',
+        description: 'Full text formatting and inspection tools:',
+        syntax: 'str.upper() | str.lower() | str.trim() | str.split(sep) | str.startsWith(sub)',
+        codeLang: 'strings.kode',
+        code: `let raw = "   AniKode Language System   "
+
+let clean = raw.trim()
+say.out("Trimmed:", clean)
+say.out("Upper:", clean.upper())
+say.out("Lower:", clean.lower())
+
+let words = clean.split(" ")
+say.out("Words Array:", words)
+
+say.out("Starts with 'Ani':", clean.startsWith("Ani"))
+say.out("Ends with 'System':", clean.endsWith("System"))
+say.out("Repeated (3x):", "Kode!".repeat(3))`,
+        output: `// Output:
+// Trimmed: AniKode Language System
+// Upper: ANIKODE LANGUAGE SYSTEM
+// Lower: anikode language system
+// Words Array: ["AniKode", "Language", "System"]
+// Starts with 'Ani': true
+// Ends with 'System': true
+// Repeated (3x): Kode!Kode!Kode!`
+      },
+      {
+        id: 'map-methods',
+        title: 'Map / Dictionary Methods (.keys, .values)',
+        description: 'Inspect and extract data from associative key-value dictionaries:',
+        syntax: 'map.keys() | map.values()',
+        codeLang: 'maps.kode',
+        code: `let config = {
+    "host": "localhost",
+    "port": 8080,
+    "ssl": true
+}
+
+let keys = config.keys()
+let values = config.values()
+
+say.out("Keys:", keys)
+say.out("Values:", values)`,
+        output: `// Output:
+// Keys: ["host", "port", "ssl"]
+// Values: ["localhost", 8080, true]`
+      }
+    ]
+  },
+  {
     id: 'control-flow-loops',
     category: 'Control Flow',
-    title: 'Conditionals, Match & Safe Loops',
+    title: 'Conditionals, While & Safe Loops',
     icon: Repeat,
-    description: 'AniKode includes if/else ladders, match/case pattern branching, deterministic bounded range loops, and collection iterators.',
+    description: 'AniKode includes if/else ladders, while loops, deterministic bounded range loops, and collection iterators with break and continue.',
     featuresTitle: 'Deterministic, Safe Iteration',
     featuresDesc: 'Range loops eliminate infinite-loop freeze conditions by evaluating start/end bounds upfront.',
     bulletPoints: [
       'if / else if / else: Standard conditional branching',
-      'match / case / default: Clean structural pattern matching',
+      'while <cond>: Standard boolean condition loop with break/continue',
       'loop i from A to B: Bounded range iteration (ascending or descending)',
       'each item in collection: High-speed collection traversal',
     ],
     sections: [
       {
-        id: 'if-else-match',
-        title: 'Conditionals (if/else) & Match Statements',
+        id: 'if-else-branching',
+        title: 'Conditionals (if / else if / else)',
         description: 'Branch your program logic cleanly:',
-        syntax: 'if <cond> { ... } else { ... } | match <val> { case <val> { ... } default { ... } }',
+        syntax: 'if <cond> { ... } else if <cond> { ... } else { ... }',
         codeLang: 'conditionals.kode',
         code: `let score = 88
 
@@ -347,23 +583,32 @@ if score >= 90 {
     say.out("Grade: B")
 } else {
     say.out("Grade: C")
-}
+}`,
+        output: '// Output: Grade: B'
+      },
+      {
+        id: 'while-loops',
+        title: 'While Loops with break & continue',
+        description: 'Standard conditional iteration for indeterminate cycles:',
+        syntax: 'while <condition> { ... }',
+        codeLang: 'while_demo.kode',
+        code: `let counter = 0
 
-let command = "start"
-match command {
-    case "start" {
-        say.out("🚀 Engine started.")
+while counter < 10 {
+    counter = counter + 1
+    if counter == 3 {
+        continue ~ Skip 3 ~
     }
-    case "stop" {
-        say.out("🛑 Engine halted.")
+    if counter == 6 {
+        break    ~ Stop at 6 ~
     }
-    default {
-        say.out("❓ Unknown command.")
-    }
+    say.out("Counter:", counter)
 }`,
         output: `// Output:
-// Grade: B
-// 🚀 Engine started.`
+// Counter: 1
+// Counter: 2
+// Counter: 4
+// Counter: 5`
       },
       {
         id: 'bounded-range-loops',
@@ -418,15 +663,16 @@ each lang in languages {
   {
     id: 'functions-recursion',
     category: 'Functions & Modular',
-    title: 'Functions & recurse()',
+    title: 'Functions, recurse() & Modules',
     icon: FunctionSquare,
-    description: 'Define reusable functions, return values, and utilize the native recurse() keyword for self-recursion.',
-    featuresTitle: 'First-Class Functions & Self-Recursion',
+    description: 'Define reusable functions, return values, utilize recurse() for self-recursion, and split code across files with import.',
+    featuresTitle: 'First-Class Functions, Self-Recursion & Modular Code',
     featuresDesc: 'The recurse() keyword resolves the current executing function automatically, making recursive algorithms refactor-proof.',
     bulletPoints: [
       'fn <name>(<args>): Declares named functions',
       'return <expr>: Returns execution results',
-      'recurse(<args>): Re-invokes the current function without repeating its name',
+      'recurse(<args>): Re-invokes current function without repeating its name',
+      'import "file.kode": Seamlessly imports modular code files',
     ],
     sections: [
       {
@@ -463,6 +709,22 @@ say.out("Factorial of 6 =", factorial(6))`,
         output: `// Output:
 // Factorial of 5 = 120
 // Factorial of 6 = 720`
+      },
+      {
+        id: 'import-modules',
+        title: 'Modular Imports (import "file.kode")',
+        description: 'Split your application into modular files and import them seamlessly:',
+        syntax: 'import "<path.kode>"',
+        codeLang: 'main.kode',
+        code: `~ math_helpers.kode ~
+fn add(a, b) { return a + b }
+
+~ main.kode ~
+import "math_helpers.kode"
+
+let sum = add(40, 2)
+say.out("Sum from imported module:", sum)`,
+        output: '// Output: Sum from imported module: 42'
       }
     ]
   },
@@ -476,7 +738,7 @@ say.out("Factorial of 6 =", factorial(6))`,
     featuresDesc: 'Zero-import built-in namespaces empower immediate productivity.',
     bulletPoints: [
       'try / catch / finally: Full exception trapping and resource cleanup',
-      'throw: Raise runtime errors with custom error messages',
+      'throw: Raise runtime errors with custom error messages or Error objects',
       'say.out & say.in: Multi-argument output and interactive terminal input',
       'math: sqrt, pow, min, max, clamp, round, floor, ceil, abs, random, pi, e',
       'file: read, write, append, exists (Desktop CLI & C++ Mode)',
@@ -509,6 +771,21 @@ try {
 // Cleanup: Division routine finished.`
       },
       {
+        id: 'terminal-io',
+        title: 'Standard Console I/O (say.out & say.in)',
+        description: 'Print multi-argument output or prompt for interactive user terminal input:',
+        syntax: 'say.out(...) | say.in("<prompt>")',
+        codeLang: 'io_demo.kode',
+        code: `say.out("System Status:", "Online", "Code:", 200)
+
+let userName = say.in("Enter your name: ")
+say.out("👋 Hello,", userName)`,
+        output: `// Output:
+// System Status: Online Code: 200
+// Enter your name: Ayush
+// 👋 Hello, Ayush`
+      },
+      {
         id: 'math-namespace',
         title: 'Built-in math Namespace',
         description: 'Comprehensive mathematical functions and constants available without imports:',
@@ -524,7 +801,9 @@ say.out("Rounded 3.75:", math.round(3.75))
 say.out("Floor 4.9:", math.floor(4.9))
 say.out("Ceil 4.1:", math.ceil(4.1))
 say.out("Min of (10, 20):", math.min(10, 20))
-say.out("Max of (10, 20):", math.max(10, 20))`,
+say.out("Max of (10, 20):", math.max(10, 20))
+say.out("Absolute (-42):", math.abs(-42))
+say.out("Random Float (0..1):", math.random())`,
         output: `// Output:
 // PI Constant: 3.141592653589793
 // E Constant: 2.718281828459045
@@ -535,7 +814,9 @@ say.out("Max of (10, 20):", math.max(10, 20))`,
 // Floor 4.9: 4
 // Ceil 4.1: 5
 // Min of (10, 20): 10
-// Max of (10, 20): 20`
+// Max of (10, 20): 20
+// Absolute (-42): 42
+// Random Float: 0.742819...`
       },
       {
         id: 'file-namespace',
@@ -567,6 +848,12 @@ export default function DocsPage() {
   const [activeTopicId, setActiveTopicId] = useState('intro');
   const [copiedSection, setCopiedSection] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeTabs, setActiveTabs] = useState<Record<string, string>>({ 'method-cli': 'npm' });
+
+  // Automatically scroll to the top smoothly whenever active topic changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [activeTopicId]);
 
   const currentTopicIndex = COMPLETE_DOCS.findIndex(t => t.id === activeTopicId);
   const currentTopic = COMPLETE_DOCS[currentTopicIndex] || COMPLETE_DOCS[0];
@@ -733,123 +1020,159 @@ export default function DocsPage() {
             )}
 
             {/* Content Sections & Code Blocks */}
-            {currentTopic.sections.map((sec) => (
-              <section key={sec.id} id={sec.id} style={{ marginBottom: '44px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-                  <h2 className="font-headline-md" style={{ fontSize: '24px', color: 'var(--on-surface)', margin: 0 }}>
-                    {sec.title}
-                  </h2>
-                </div>
+            {currentTopic.sections.map((sec) => {
+              const activeTabKey = activeTabs[sec.id] || (sec.tabs ? sec.tabs[0].label : null);
+              const displayedCode = sec.tabs 
+                ? (sec.tabs.find(t => t.label === activeTabKey)?.code || sec.code)
+                : sec.code;
 
-                <p className="font-body-md" style={{ color: 'var(--on-surface-variant)', marginBottom: '12px' }}>
-                  {sec.description}
-                </p>
+              return (
+                <section key={sec.id} id={sec.id} style={{ marginBottom: '44px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                    <h2 className="font-headline-md" style={{ fontSize: '24px', color: 'var(--on-surface)', margin: 0 }}>
+                      {sec.title}
+                    </h2>
+                  </div>
 
-                {sec.syntax && (
-                  <div style={{
-                    marginBottom: '12px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    fontSize: '13px',
-                    color: 'var(--on-surface-variant)',
-                  }}>
-                    <span className="font-label-caps" style={{ color: 'var(--primary)', fontSize: '11px' }}>SYNTAX:</span>
-                    <code style={{
-                      backgroundColor: 'rgba(49, 53, 60, 0.5)',
-                      padding: '2px 8px',
-                      borderRadius: '4px',
-                      border: '1px solid var(--outline-variant)',
-                      color: 'var(--on-surface)',
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: '12px',
+                  <p className="font-body-md" style={{ color: 'var(--on-surface-variant)', marginBottom: '12px' }}>
+                    {sec.description}
+                  </p>
+
+                  {sec.syntax && (
+                    <div style={{
+                      marginBottom: '12px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      fontSize: '13px',
+                      color: 'var(--on-surface-variant)',
                     }}>
-                      {sec.syntax}
-                    </code>
-                  </div>
-                )}
-
-                {/* Code Block Component matching code.html */}
-                <div style={{
-                  position: 'relative',
-                  borderRadius: '8px',
-                  overflow: 'hidden',
-                  border: '1px solid var(--outline-variant)',
-                  backgroundColor: 'var(--code-bg)',
-                  marginBottom: '16px',
-                }}>
-                  {/* Code Header Bar */}
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '8px 16px',
-                    backgroundColor: 'var(--surface-container-high)',
-                    borderBottom: '1px solid var(--outline-variant)',
-                  }}>
-                    <span className="font-label-caps" style={{ color: 'var(--on-surface-variant)' }}>
-                      {sec.codeLang}
-                    </span>
-                    <button
-                      onClick={() => handleCopy(sec.code, sec.id)}
-                      className="font-label-caps"
-                      style={{
-                        background: 'transparent',
-                        border: 'none',
-                        color: 'var(--on-surface-variant)',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px',
-                        transition: 'color 0.2s',
-                      }}
-                      onMouseEnter={(e) => e.currentTarget.style.color = 'var(--primary)'}
-                      onMouseLeave={(e) => e.currentTarget.style.color = 'var(--on-surface-variant)'}
-                      title="Copy code"
-                    >
-                      {copiedSection === sec.id ? <Check size={14} color="#40ba51" /> : <Copy size={14} />}
-                      <span>{copiedSection === sec.id ? 'Copied' : 'Copy'}</span>
-                    </button>
-                  </div>
-
-                  {/* Code Snippet */}
-                  <div style={{ padding: '16px', overflowX: 'auto' }}>
-                    <pre className="font-code-block" style={{ margin: 0, color: 'var(--on-surface)', lineHeight: 1.6 }}>
-                      <code>{sec.code}</code>
-                    </pre>
-                    {sec.output && (
-                      <div style={{
-                        marginTop: '12px',
-                        paddingTop: '10px',
-                        borderTop: '1px solid rgba(65, 71, 82, 0.4)',
-                        color: '#67df70',
+                      <span className="font-label-caps" style={{ color: 'var(--primary)', fontSize: '11px' }}>SYNTAX:</span>
+                      <code style={{
+                        backgroundColor: 'rgba(49, 53, 60, 0.5)',
+                        padding: '2px 8px',
+                        borderRadius: '4px',
+                        border: '1px solid var(--outline-variant)',
+                        color: 'var(--on-surface)',
                         fontFamily: 'var(--font-mono)',
-                        fontSize: '13px',
-                        whiteSpace: 'pre-wrap',
+                        fontSize: '12px',
                       }}>
-                        {sec.output}
-                      </div>
-                    )}
-                  </div>
-                </div>
+                        {sec.syntax}
+                      </code>
+                    </div>
+                  )}
 
-                {sec.notes && (
-                  <ul style={{
-                    margin: '8px 0 0',
-                    paddingLeft: '20px',
-                    fontSize: '13px',
-                    color: 'var(--outline)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '4px',
+                  {/* Code Block Component matching code.html */}
+                  <div style={{
+                    position: 'relative',
+                    borderRadius: '8px',
+                    overflow: 'hidden',
+                    border: '1px solid var(--outline-variant)',
+                    backgroundColor: 'var(--code-bg)',
+                    marginBottom: '16px',
                   }}>
-                    {sec.notes.map((note, idx) => (
-                      <li key={idx}>{note}</li>
-                    ))}
-                  </ul>
-                )}
-              </section>
-            ))}
+                    {/* Code Header Bar with Optional Tabs */}
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      padding: '8px 16px',
+                      backgroundColor: 'var(--surface-container-high)',
+                      borderBottom: '1px solid var(--outline-variant)',
+                    }}>
+                      {sec.tabs ? (
+                        <div style={{ display: 'flex', gap: '4px' }}>
+                          {sec.tabs.map((tab) => (
+                            <button
+                              key={tab.label}
+                              onClick={() => setActiveTabs({ ...activeTabs, [sec.id]: tab.label })}
+                              className="font-label-caps"
+                              style={{
+                                padding: '4px 10px',
+                                borderRadius: '4px',
+                                border: 'none',
+                                backgroundColor: (activeTabs[sec.id] || sec.tabs![0].label) === tab.label 
+                                  ? 'var(--surface-container-highest)' 
+                                  : 'transparent',
+                                color: (activeTabs[sec.id] || sec.tabs![0].label) === tab.label 
+                                  ? 'var(--primary)' 
+                                  : 'var(--on-surface-variant)',
+                                cursor: 'pointer',
+                                fontSize: '12px',
+                                transition: 'all 0.2s',
+                              }}
+                            >
+                              {tab.label}
+                            </button>
+                          ))}
+                        </div>
+                      ) : (
+                        <span className="font-label-caps" style={{ color: 'var(--on-surface-variant)' }}>
+                          {sec.codeLang}
+                        </span>
+                      )}
+
+                      <button
+                        onClick={() => handleCopy(displayedCode, sec.id)}
+                        className="font-label-caps"
+                        style={{
+                          background: 'transparent',
+                          border: 'none',
+                          color: 'var(--on-surface-variant)',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          transition: 'color 0.2s',
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.color = 'var(--primary)'}
+                        onMouseLeave={(e) => e.currentTarget.style.color = 'var(--on-surface-variant)'}
+                        title="Copy code"
+                      >
+                        {copiedSection === sec.id ? <Check size={14} color="#40ba51" /> : <Copy size={14} />}
+                        <span>{copiedSection === sec.id ? 'Copied' : 'Copy'}</span>
+                      </button>
+                    </div>
+
+                    {/* Code Snippet */}
+                    <div style={{ padding: '16px', overflowX: 'auto' }}>
+                      <pre className="font-code-block" style={{ margin: 0, color: 'var(--on-surface)', lineHeight: 1.6 }}>
+                        <code>{displayedCode}</code>
+                      </pre>
+                      {sec.output && (
+                        <div style={{
+                          marginTop: '12px',
+                          paddingTop: '10px',
+                          borderTop: '1px solid rgba(65, 71, 82, 0.4)',
+                          color: '#67df70',
+                          fontFamily: 'var(--font-mono)',
+                          fontSize: '13px',
+                          whiteSpace: 'pre-wrap',
+                        }}>
+                          {sec.output}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {sec.notes && (
+                    <ul style={{
+                      margin: '8px 0 0',
+                      paddingLeft: '20px',
+                      fontSize: '13px',
+                      color: 'var(--outline)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '4px',
+                    }}>
+                      {sec.notes.map((note, idx) => (
+                        <li key={idx}>{note}</li>
+                      ))}
+                    </ul>
+                  )}
+                </section>
+              );
+            })}
           </article>
 
           {/* Next / Previous Pagination Footer matching code.html */}
