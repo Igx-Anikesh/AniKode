@@ -21,7 +21,9 @@ fn fibonacci(n) {
 }
 
 let result = fibonacci(10)
-say.out("Fibonacci(10) =", result) ~ 55 ~`;
+let isValid = (result == 55) implies true
+say.out("Fibonacci(10) =", result)
+say.out("Verified Logic:", isValid) ~ true ~`;
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(heroCode);
@@ -39,14 +41,31 @@ say.out("Fibonacci(10) =", result) ~ 55 ~`;
       }}>
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))',
-          gap: '48px',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+          gap: '64px',
           alignItems: 'center',
         }}>
-          {/* Hero Text */}
+          {/* Left Hero Content */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <h1 className="font-headline-lg" style={{ color: 'var(--on-surface)' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '6px 14px',
+                borderRadius: '9999px',
+                backgroundColor: 'rgba(57, 224, 122, 0.08)',
+                border: '1px solid rgba(57, 224, 122, 0.2)',
+                color: 'var(--primary)',
+                width: 'fit-content',
+              }}>
+                <Zap size={14} />
+                <span className="font-label-caps" style={{ color: 'var(--primary)', letterSpacing: '0.05em' }}>
+                  AniKode v1.0.0 is Live
+                </span>
+              </div>
+
+              <h1 className="font-display-lg" style={{ color: 'var(--on-surface)', margin: 0, letterSpacing: '-0.03em' }}>
                 Code at the Speed of Thought
               </h1>
               <p className="font-body-lg" style={{ color: 'var(--on-surface-variant)', maxWidth: '500px' }}>
@@ -71,22 +90,30 @@ say.out("Fibonacci(10) =", result) ~ 55 ~`;
             </div>
 
             {/* Small subtle text link for older versions */}
-            <div style={{ marginTop: '-16px' }}>
+            <div style={{ marginTop: '-24px' }}>
               <a
                 href={SITE_CONFIG.links.releases}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
                   fontSize: '12px',
-                  color: 'var(--outline)',
-                  textDecoration: 'none',
+                  color: '#ff6b6b',
+                  textDecoration: 'underline',
+                  textUnderlineOffset: '3px',
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '4px',
-                  transition: 'color 0.2s',
+                  transition: 'color 0.2s, opacity 0.2s',
+                  opacity: 0.9,
                 }}
-                onMouseEnter={(e) => e.currentTarget.style.color = 'var(--primary)'}
-                onMouseLeave={(e) => e.currentTarget.style.color = 'var(--outline)'}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = '#ff9999';
+                  e.currentTarget.style.opacity = '1';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = '#ff6b6b';
+                  e.currentTarget.style.opacity = '0.9';
+                }}
               >
                 <span>See other versions &amp; release notes</span>
                 <ArrowRight size={12} />
@@ -129,9 +156,9 @@ say.out("Fibonacci(10) =", result) ~ 55 ~`;
                 </button>
               </div>
 
-              {/* Code Content in Pure AniKode Syntax */}
-              <div style={{ padding: '18px 20px', overflowX: 'auto' }}>
-                <pre className="font-code-block" style={{ margin: 0, color: 'var(--on-surface-variant)', lineHeight: 1.5, fontSize: '13px' }}>
+              {/* Code Content in Pure AniKode Syntax (1.25x length) */}
+              <div style={{ padding: '22px 24px', overflowX: 'auto' }}>
+                <pre className="font-code-block" style={{ margin: 0, color: 'var(--on-surface-variant)', lineHeight: 1.55, fontSize: '13.5px' }}>
                   <code>
                     <span className="hl-comment">~ AniKode High-Performance Fibonacci ~</span>{'\n'}
                     <span className="hl-keyword">fn</span> <span className="hl-function">fibonacci</span>(n) &#123;{'\n'}
@@ -147,7 +174,9 @@ say.out("Fibonacci(10) =", result) ~ 55 ~`;
                     &#125;{'\n'}
                     {'\n'}
                     <span className="hl-keyword">let</span> result = fibonacci(<span className="hl-number">10</span>){'\n'}
-                    <span className="hl-function">say.out</span>(<span className="hl-string">&quot;Fibonacci(10) =&quot;</span>, result) <span className="hl-comment">~ Output: 55 ~</span>
+                    <span className="hl-keyword">let</span> isValid = (result == <span className="hl-number">55</span>) <span className="hl-operator">implies</span> <span className="hl-keyword">true</span>{'\n'}
+                    <span className="hl-function">say.out</span>(<span className="hl-string">&quot;Fibonacci(10) =&quot;</span>, result){'\n'}
+                    <span className="hl-function">say.out</span>(<span className="hl-string">&quot;Verified Logic:&quot;</span>, isValid) <span className="hl-comment">~ true ~</span>
                   </code>
                 </pre>
               </div>
