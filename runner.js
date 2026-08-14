@@ -2,7 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
-const { execSync } = require('child_process');
+const { execSync, execFileSync } = require('child_process');
 const { Lexer } = require('./lexer');
 const { Parser } = require('./parser');
 const { CodeGenerator } = require('./codegen');
@@ -20,21 +20,28 @@ function __say_in(promptText) {
   if (promptText) {
     process.stdout.write(promptText);
   }
+  const chunks = [];
   const buffer = Buffer.alloc(1024);
   let bytesRead = 0;
   try {
-    bytesRead = fs.readSync(0, buffer, 0, 1024, null);
+    while (true) {
+      bytesRead = fs.readSync(0, buffer, 0, buffer.length, null);
+      if (bytesRead <= 0) break;
+      const chunk = buffer.subarray(0, bytesRead);
+      chunks.push(chunk);
+      if (chunk.includes(10) || bytesRead < buffer.length) break;
+    }
   } catch (err) {
-    return '';
+    if (chunks.length === 0) return '';
   }
-  return buffer.toString('utf8', 0, bytesRead).replace(/\r?\n$/, '');
+  return Buffer.concat(chunks).toString('utf8').replace(/\r?\n$/, '');
 }
 
 function findCppCompiler() {
   const compilers = ['g++', 'clang++', 'cl'];
   for (let comp of compilers) {
     try {
-      execSync(`${comp} --version`, { stdio: 'ignore' });
+      execFileSync(comp, ['--version'], { stdio: 'ignore' });
       return comp;
     } catch (e) {
       // Not found on PATH
@@ -54,8 +61,8 @@ function findCppCompiler() {
   for (let dir of searchDirs) {
     if (fs.existsSync(dir)) {
       try {
-        const found = findFileRecursive(dir, 'g++.exe');
-        if (found) return `"${found}"`;
+        const found = findFileRecursive(dir, 'g++.exe', 0, 3);
+        if (found) return found;
       } catch (e) {}
     }
   }
@@ -63,25 +70,57 @@ function findCppCompiler() {
   return null;
 }
 
-function findFileRecursive(dir, filename) {
-  const entries = fs.readdirSync(dir, { withFileTypes: true });
-  for (let entry of entries) {
-    const fullPath = path.join(dir, entry.name);
-    if (entry.isDirectory()) {
-      const res = findFileRecursive(fullPath, filename);
-      if (res) return res;
-    } else if (entry.name.toLowerCase() === filename.toLowerCase()) {
-      return fullPath;
+function findFileRecursive(dir, filename, currentDepth = 0, maxDepth = 3) {
+  if (currentDepth > maxDepth) return null;
+  try {
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    for (let entry of entries) {
+      const fullPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        const res = findFileRecursive(fullPath, filename, currentDepth + 1, maxDepth);
+        if (res) return res;
+      } else if (entry.name.toLowerCase() === filename.toLowerCase()) {
+        return fullPath;
+      }
     }
-  }
+  } catch (e) {}
   return null;
 }
 
+const PKG_VERSION = '1.0.0';
+
 const args = process.argv.slice(2);
-if (args.length === 0) {
-  console.log("Usage: anikode run <filename.kode> [--native | --js]");
-  console.log("       anikode build <filename.kode>");
-  process.exit(1);
+
+// Handle --version flag
+if (args.includes('--version') || args.includes('-v')) {
+  console.log(`AniKode v${PKG_VERSION}`);
+  process.exit(0);
+}
+
+// Handle --help flag
+if (args.includes('--help') || args.includes('-h') || args.length === 0) {
+  console.log(`
+  ╔══════════════════════════════════════════╗
+  ║     AniKode Compiler v${PKG_VERSION}              ║
+  ╚══════════════════════════════════════════╝
+
+  Usage:
+    anikode run <filename.kode>              Run a .kode file
+    anikode run <filename.kode> --native     Force C++ native compilation
+    anikode run <filename.kode> --js         Force JavaScript VM execution
+    anikode build <filename.kode>            Compile to native binary (.exe)
+
+  Options:
+    --version, -v    Show version number
+    --help, -h       Show this help message
+    --native         Use C++ compiler (g++/clang++) for execution
+    --js             Use V8 JavaScript sandbox for execution
+
+  Examples:
+    anikode run hello.kode
+    anikode build my_program.kode
+  `);
+  process.exit(args.length === 0 ? 1 : 0);
 }
 
 let mode = 'auto'; // 'auto', 'native', 'js', 'build'
@@ -150,7 +189,7 @@ try {
     const cppGen = new CppCodeGenerator();
     const cppCode = cppGen.generate(ast);
 
-    const buildDir = path.join(__dirname, '.build');
+    const buildDir = path.join(path.dirname(absolutePath), '.build');
     if (!fs.existsSync(buildDir)) fs.mkdirSync(buildDir);
 
     const cppFile = path.join(buildDir, 'output.cpp');
@@ -159,7 +198,7 @@ try {
     fs.writeFileSync(cppFile, cppCode);
 
     // Compile with g++ -O3 -static for max speed & self-contained binary!
-    execSync(`${compiler} -O3 -static -std=c++20 "${cppFile}" -o "${exeFile}"`);
+    execFileSync(compiler, ['-O3', '-static', '-std=c++20', cppFile, '-o', exeFile], { stdio: 'inherit' });
 
     if (mode === 'build') {
       console.log(`✅ Native binary compiled successfully to '${exeFile}'`);
@@ -167,7 +206,7 @@ try {
     }
 
     // Execute native binary directly!
-    execSync(`"${exeFile}"`, { stdio: 'inherit' });
+    execFileSync(exeFile, [], { stdio: 'inherit' });
 
   } else {
     // Transpile to JS (V8 Runtime)
@@ -177,11 +216,23 @@ try {
     const sandbox = {
       console: console,
       __say_in: __say_in,
+      __file_read: (filePath) => {
+        const resolved = path.resolve(path.dirname(absolutePath), filePath);
+        if (!fs.existsSync(resolved)) {
+          throw new Error(`FileError: File not found '${filePath}'`);
+        }
+        return fs.readFileSync(resolved, 'utf8');
+      },
+      __file_write: (filePath, content) => {
+        const resolved = path.resolve(path.dirname(absolutePath), filePath);
+        fs.writeFileSync(resolved, String(content));
+        return null;
+      },
       int: (x) => parseInt(x, 10),
       float: (x) => parseFloat(x),
       str: (x) => String(x),
-      Math: Math,
-      require: require
+      Math: Math
+      // NOTE: `require` intentionally NOT exposed — prevents arbitrary code execution
     };
 
     vm.createContext(sandbox);

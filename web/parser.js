@@ -644,7 +644,7 @@
           
           let absPath = path.resolve(resolvedPath);
           if (this.visitedFiles.has(absPath)) {
-            // Already imported, return empty list of statements to skip
+            // Already imported in this compilation run, skip duplicates
             return [];
           }
           
@@ -655,13 +655,13 @@
           
           fileContent = fs.readFileSync(absPath, 'utf8');
           
-          const nextVisited = new Set(this.visitedFiles);
-          nextVisited.add(absPath);
+          // Mark as visited in the shared compilation set
+          this.visitedFiles.add(absPath);
           
           const { Lexer } = require('./lexer');
           const subLexer = new Lexer(fileContent);
           const subParser = new Parser(subLexer, absPath);
-          subParser.visitedFiles = nextVisited;
+          subParser.visitedFiles = this.visitedFiles;
           
           const subProgram = subParser.parseProgram();
           if (subParser.errors.length > 0) {
@@ -676,69 +676,9 @@
           return null;
         }
       } else {
-        // Browser environment
-        let currentFileDir = "";
-        if (this.currentFile) {
-          let parts = this.currentFile.split('/');
-          parts.pop();
-          currentFileDir = parts.join('/');
-        }
-        
-        if (currentFileDir) {
-          if (importPath.startsWith('./')) {
-            resolvedPath = currentFileDir + '/' + importPath.slice(2);
-          } else if (importPath.startsWith('../')) {
-            let baseParts = currentFileDir.split('/');
-            let importParts = importPath.split('/');
-            while (importParts[0] === '..') {
-              baseParts.pop();
-              importParts.shift();
-            }
-            resolvedPath = baseParts.concat(importParts).join('/');
-          } else if (!importPath.startsWith('/')) {
-            resolvedPath = currentFileDir + '/' + importPath;
-          }
-        }
-        
-        // Remove duplicate / or leading ./ from resolvedPath for simple lookup
-        resolvedPath = resolvedPath.replace(/^\.\//, '');
-
-        const vfs = window.__anikode_virtual_fs || {};
-        if (!vfs[resolvedPath] && vfs[importPath]) {
-          resolvedPath = importPath; // Fallback to raw string if exact resolved is not found
-        }
-        
-        if (!vfs[resolvedPath]) {
-          this.errors.push(`Line ${this.curToken.line}: Imported file not found in virtual workspace: '${importPath}' (Resolved: '${resolvedPath}')`);
-          return null;
-        }
-        
-        fileContent = vfs[resolvedPath];
-        
-        if (!this.visitedFiles) {
-          this.visitedFiles = new Set();
-        }
-        if (this.currentFile) {
-          this.visitedFiles.add(this.currentFile);
-        }
-        if (this.visitedFiles.has(resolvedPath)) {
-          return [];
-        }
-        
-        const nextVisited = new Set(this.visitedFiles);
-        nextVisited.add(resolvedPath);
-        
-        const subLexer = new window.Lexer(fileContent);
-        const subParser = new Parser(subLexer, resolvedPath);
-        subParser.visitedFiles = nextVisited;
-        
-        const subProgram = subParser.parseProgram();
-        if (subParser.errors.length > 0) {
-          this.errors.push(...subParser.errors);
-          return null;
-        }
-        
-        return subProgram.statements;
+        // Browser playground environment - notify user about CLI multi-file workflow
+        this.errors.push(`Line ${this.curToken.line}: Modular file imports ('import "${importPath}"') are designed for local projects using the AniKode desktop CLI. In the web playground, please write your functions directly in the editor.`);
+        return null;
       }
     }
 

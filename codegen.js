@@ -46,6 +46,8 @@
 
       switch (node.type) {
         case 'Program':
+          this.scopes = [new Set()];
+          this.currentFunctionName = null;
           // A program is just a list of statements executed one after another.
           // Filter out empty strings (disabled statements) to keep compiled code clean.
           return node.statements
@@ -157,10 +159,10 @@
             // Check if it's file namespace
             if (obj === 'file') {
               if (prop === 'read') {
-                return `require('fs').readFileSync(${argsList}, 'utf8')`;
+                return `__file_read(${argsList})`;
               }
               if (prop === 'write') {
-                return `require('fs').writeFileSync(${argsList})`;
+                return `__file_write(${argsList})`;
               }
             }
             

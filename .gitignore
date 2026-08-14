@@ -5,3 +5,7 @@ sample_output.txt
 *.o
 *.out
 web/server.js
+dist/
+.next/
+web/.next/
+web/node_modules/

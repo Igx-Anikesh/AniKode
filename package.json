@@ -9,7 +9,9 @@
   "scripts": {
     "test-lexer": "node test_lexer.js",
     "test-parser": "node test_parser.js",
-    "test-imports": "node tests/test_imports.js"
+    "test-imports": "node tests/test_imports.js",
+    "bundle": "npx esbuild runner.js --bundle --platform=node --outfile=dist/anikode-bundle.js",
+    "build": "powershell -ExecutionPolicy Bypass -File build-exe.ps1"
   },
   "keywords": [
     "anikode",
@@ -17,5 +19,8 @@
     "language"
   ],
   "author": "Ayush",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "sharp": "^0.35.3"
+  }
 }

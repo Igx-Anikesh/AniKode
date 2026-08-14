@@ -786,6 +786,9 @@ inline Value any_fn(const Value& coll) {
 
     switch (node.type) {
       case 'Program':
+        this.scopes = [new Set()];
+        this.currentFunctionName = null;
+        this.functionDeclarations = [];
         let bodyStatements = [];
         let functions = [];
 

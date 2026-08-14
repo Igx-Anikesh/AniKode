@@ -1,0 +1,5 @@
+{
+  "main": "dist/anikode-bundle.js",
+  "output": "dist/sea-prep.blob",
+  "disableExperimentalSEAWarning": true
+}

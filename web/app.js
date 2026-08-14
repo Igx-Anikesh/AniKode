@@ -1,25 +1,17 @@
-// Virtual Filesystem for Browser Playground
-window.__anikode_virtual_fs = {
-  "math_utils.kode": `\\ Preloaded AniKode library \\
-fn add(a, b) {
-  return a + b
-}
-
-fn subtract(a, b) {
-  return a - b
-}`
-};
-
 // Playground Code Templates
 const EXAMPLES = {
-  imports: `\\ Modular Imports Example \\
-import "math_utils.kode"
+  logic: `\\ Conditional Logic & Comparisons \\
+set score = 85
 
-let a = 15
-let b = 30
-say.out("--- IMPORTS DEMO ---")
-say.out("Using function 'add' from 'math_utils.kode':")
-say.out("add(15, 30) =", add(a, b))`,
+say.out("Your score is: " + score)
+
+if score >= 90 {
+  say.out("Grade: A")
+} else if score >= 80 {
+  say.out("Grade: B")
+} else {
+  say.out("Grade: C or lower")
+}`,
 
   calculator: `\\ AniKode Calculator & Variables \\
 let x = 100
@@ -159,18 +151,37 @@ function compileAndRun() {
       const response = prompt(promptText);
       return response !== null ? response : '';
     };
+
+    // File handlers in browser (helpful notice)
+    const customFileRead = function(filePath) {
+      appendTerminalLine(`⚠️ file.read("${filePath}"): File system access is not available in the web playground. Use the desktop CLI ('anikode run') for file I/O.`, 'error');
+      throw new Error(`FileError: file.read is not supported in the web playground`);
+    };
+
+    const customFileWrite = function(filePath, content) {
+      appendTerminalLine(`⚠️ file.write("${filePath}"): File system access is not available in the web playground. Use the desktop CLI ('anikode run') for file I/O.`, 'error');
+      throw new Error(`FileError: file.write is not supported in the web playground`);
+    };
     
     // Execute the transpiled JS code inside an isolated function wrapper
-    const runnerFunction = new Function('console', '__say_in', 'Math', 'int', 'float', 'str', compiledJs);
+    // Shadowing window and document prevents accidental DOM manipulation from user script
+    const runnerFunction = new Function(
+      'console', '__say_in', '__file_read', '__file_write', 'Math', 'int', 'float', 'str', 'window', 'document',
+      compiledJs
+    );
     
     // Run the compiled code!
     runnerFunction(
       customConsole, 
       customSayIn, 
+      customFileRead,
+      customFileWrite,
       Math, 
       (x) => parseInt(x, 10), 
       (x) => parseFloat(x), 
-      (x) => String(x)
+      (x) => String(x),
+      undefined,
+      undefined
     );
     
     appendTerminalLine("🚀 Program execution finished successfully.", "success");

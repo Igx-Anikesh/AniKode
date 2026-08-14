@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>DevLang - Community &amp; Ecosystem</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#dfe2eb",
+                        "on-error": "#690005",
+                        "surface-container-highest": "#31353c",
+                        "on-tertiary": "#00390d",
+                        "tertiary-fixed": "#83fc89",
+                        "tertiary-fixed-dim": "#67df70",
+                        "tertiary": "#67df70",
+                        "on-tertiary-fixed": "#002105",
+                        "secondary-fixed": "#eddcff",
+                        "error": "#ffb4ab",
+                        "surface-container-high": "#262a31",
+                        "inverse-primary": "#0060aa",
+                        "on-tertiary-fixed-variant": "#005317",
+                        "tertiary-container": "#40ba51",
+                        "surface-container-lowest": "#0a0e14",
+                        "on-primary-fixed-variant": "#004882",
+                        "on-surface-variant": "#c0c7d4",
+                        "background": "#10141a",
+                        "surface-container": "#1c2026",
+                        "on-error-container": "#ffdad6",
+                        "surface": "#10141a",
+                        "on-background": "#dfe2eb",
+                        "surface-container-low": "#181c22",
+                        "secondary-container": "#5d2d9c",
+                        "on-primary-fixed": "#001c38",
+                        "surface-bright": "#353940",
+                        "on-secondary-container": "#cda8ff",
+                        "on-primary-container": "#003a6b",
+                        "outline": "#8b919d",
+                        "secondary-fixed-dim": "#d8baff",
+                        "primary": "#a2c9ff",
+                        "outline-variant": "#414752",
+                        "error-container": "#93000a",
+                        "on-surface": "#dfe2eb",
+                        "inverse-on-surface": "#2d3137",
+                        "on-primary": "#00315c",
+                        "surface-variant": "#31353c",
+                        "primary-fixed-dim": "#a2c9ff",
+                        "on-secondary-fixed": "#290055",
+                        "on-secondary": "#430882",
+                        "surface-dim": "#10141a",
+                        "primary-container": "#58a6ff",
+                        "on-secondary-fixed-variant": "#5b2b9a",
+                        "on-tertiary-container": "#004411",
+                        "surface-tint": "#a2c9ff",
+                        "secondary": "#d8baff",
+                        "primary-fixed": "#d3e4ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "lg": "48px",
+                        "md": "24px",
+                        "sm": "16px",
+                        "xl": "80px",
+                        "base": "4px",
+                        "margin-mobile": "16px",
+                        "xs": "8px",
+                        "margin-desktop": "32px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Geist"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Geist"],
+                        "body-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "label-caps": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Geist"],
+                        "code-block": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "headline-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["32px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "code-block": ["14px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0D1117;
+            color: #dfe2eb;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .glow-hover:hover {
+            box-shadow: 0 0 15px rgba(162, 201, 255, 0.2);
+            border-color: #a2c9ff;
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        @media (min-width: 1024px) {
+            .bento-grid {
+                grid-template-columns: repeat(12, 1fr);
+            }
+
+            .bento-span-8 {
+                grid-column: span 8;
+            }
+
+            .bento-span-4 {
+                grid-column: span 4;
+            }
+
+            .bento-span-6 {
+                grid-column: span 6;
+            }
+        }
+
+        .nav-active {
+            color: #a2c9ff;
+            border-bottom: 2px solid #a2c9ff;
+            padding-bottom: 4px;
+        }
+    </style>
+</head>
+
+<body class="bg-[#0D1117] text-on-surface flex flex-col min-h-screen">
+    <!-- TopNavBar -->
+    <header class="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-outline-variant">
+        <div
+            class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop h-16 flex items-center justify-between">
+            <div class="flex items-center gap-lg">
+                <a class="font-headline-md text-headline-md font-bold text-on-surface" href="#">DevLang</a>
+                <nav class="hidden md:flex gap-lg">
+                    <a class="font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors"
+                        href="#">Docs</a>
+                    <a class="font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors"
+                        href="#">Playground</a>
+                    <a class="font-label-caps text-label-caps text-primary border-b-2 border-primary pb-1"
+                        href="#">Community</a>
+                    <a class="font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors"
+                        href="#">Blog</a>
+                </nav>
+            </div>
+            <div class="flex items-center gap-sm">
+                <div
+                    class="hidden md:flex items-center bg-[#161B22] border border-[#30363D] rounded-DEFAULT px-sm py-xs focus-within:border-primary transition-colors">
+                    <span class="material-symbols-outlined text-on-surface-variant mr-2"
+                        style="font-size: 18px;">search</span>
+                    <input
+                        class="bg-transparent border-none outline-none text-body-sm font-body-sm text-on-surface w-48 placeholder:font-code-block placeholder:text-outline p-0 focus:ring-0"
+                        placeholder="Search Docs..." type="text" />
+                </div>
+                <a class="bg-primary text-[#0D1117] px-md py-xs rounded-DEFAULT font-label-caps text-label-caps hover:brightness-110 transition-all"
+                    href="#">Download</a>
+            </div>
+        </div>
+    </header>
+    <!-- Main Canvas -->
+    <main
+        class="flex-grow pt-[120px] pb-xl px-margin-mobile md:px-margin-desktop max-w-[1280px] mx-auto w-full flex flex-col gap-xl">
+        <!-- Hero Section -->
+        <section class="flex flex-col items-center text-center gap-md">
+            <h1
+                class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">
+                Connect &amp; Create</h1>
+            <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">Join thousands of developers building
+                the future with DevLang. Explore packages, read updates, and contribute to the core ecosystem.</p>
+        </section>
+        <!-- Package Registry Search -->
+        <section
+            class="bg-[#161B22] border border-[#30363D] rounded-xl p-lg flex flex-col items-center justify-center gap-md glow-hover transition-all">
+            <h2 class="font-headline-md text-headline-md text-on-surface">Package Registry</h2>
+            <p class="font-body-md text-body-md text-on-surface-variant text-center max-w-xl">Search over 50,000
+                community-driven packages to supercharge your next project.</p>
+            <div class="w-full max-w-2xl flex relative mt-4">
+                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline"
+                    style="font-size: 24px;">search</span>
+                <input
+                    class="w-full bg-[#0D1117] border border-[#30363D] rounded-DEFAULT py-sm pl-12 pr-4 text-body-md font-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary transition-colors placeholder:font-code-block placeholder:text-outline outline-none"
+                    placeholder="Search for packages (e.g., dev-router, auth-utils)..." type="text" />
+                <button
+                    class="absolute right-2 top-1/2 -translate-y-1/2 bg-[#30363D] text-on-surface px-sm py-xs rounded-DEFAULT font-label-caps text-label-caps hover:bg-[#414752] transition-colors">Search</button>
+            </div>
+        </section>
+        <!-- Bento Grid: Blog & Contribution -->
+        <section class="bento-grid">
+            <!-- Latest Updates (Span 8) -->
+            <div
+                class="bento-span-8 bg-[#161B22] border border-[#30363D] rounded-xl p-md flex flex-col gap-md glow-hover transition-all">
+                <div class="flex justify-between items-center border-b border-[#30363D] pb-sm">
+                    <h2 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">feed</span> Latest Updates
+                    </h2>
+                    <a class="font-label-caps text-label-caps text-primary hover:underline" href="#">View All</a>
+                </div>
+                <div class="flex flex-col gap-sm">
+                    <!-- Blog Card 1 -->
+                    <a class="group flex flex-col sm:flex-row gap-md items-start sm:items-center p-sm rounded-lg hover:bg-[#21262D] border border-transparent hover:border-[#30363D] transition-all"
+                        href="#">
+                        <div
+                            class="w-full sm:w-32 h-24 rounded-DEFAULT bg-[#30363D] flex-shrink-0 relative overflow-hidden">
+                            <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                data-alt="A sleek, modern server room environment with glowing blue and teal lights highlighting server racks. The setting is highly technical, deep blacks contrasting with vibrant LED indicators, representing high performance and network infrastructure. Corporate modern aesthetic."
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPXM-zQ9TAiOz4Zt9JzZRLoWbsGYINebcKtn84EtgyWsUNu6pqz2hxiHzRMFjk9hS4MLU97EWFU8zVR1mFxt6vR1LRAWToMocBSBPKdIh_1RGr8RuFuhOFUu2fW61JY1BVMl783EykM0dIwzISSAzfo3O-l0g7gfR5r0VQbOmWxYMN3wDsdIlt1xKAmenVTn3Pczdf4EpMXVwQNXEQjur0jhgkz3zNPgQPVwWqnO0KH6Xg1zHIhaxZ" />
+                        </div>
+                        <div class="flex flex-col gap-xs">
+                            <span class="font-label-caps text-label-caps text-primary">Release Notes</span>
+                            <h3
+                                class="font-body-lg text-body-lg font-semibold text-on-surface group-hover:text-primary transition-colors">
+                                DevLang 1.2 is Now Available</h3>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Introducing the
+                                new concurrency model, improved compiler performance, and a revamped standard library
+                                for network requests.</p>
+                        </div>
+                    </a>
+                    <!-- Blog Card 2 -->
+                    <a class="group flex flex-col sm:flex-row gap-md items-start sm:items-center p-sm rounded-lg hover:bg-[#21262D] border border-transparent hover:border-[#30363D] transition-all"
+                        href="#">
+                        <div
+                            class="w-full sm:w-32 h-24 rounded-DEFAULT bg-[#30363D] flex-shrink-0 relative overflow-hidden">
+                            <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                data-alt="Abstract digital art featuring overlapping translucent geometric planes in dark space. Thin, crisp lines of electric blue outline the shapes, suggesting architecture and structure in a software engineering context. Minimalist, high contrast, technical mood."
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9NQsS7r7OqpgHOaU05C0G6GZyWZ2io-OgiYOx2mAy1LuQ3E7p29tvvf0YpM71Vd9_nl-y5ZhAh00itthTmsM4v2sM5RDC0iHysZvJnYUrb5YJBhGT5XkkJEU7hGkHZs1SSw-pVyLTyjbIBO9dL1MREcDBfVwfWIepm9mEz_wNbov2XlriSuZMpoRoTDm2RgX-M1aRiqe4AaDREtaEXDX_8sRYNHVVoA7fJoG94yb0qbwKedBonfvN" />
+                        </div>
+                        <div class="flex flex-col gap-xs">
+                            <span class="font-label-caps text-label-caps text-tertiary">Community</span>
+                            <h3
+                                class="font-body-lg text-body-lg font-semibold text-on-surface group-hover:text-primary transition-colors">
+                                Spotlight: Top Packages of Q3</h3>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Discover the most
+                                innovative packages built by the community this quarter, ranging from UI frameworks to
+                                heavy data processing tools.</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <!-- Join the Discussion & Contribution (Span 4) -->
+            <div class="bento-span-4 flex flex-col gap-md">
+                <!-- Join Discussion -->
+                <div
+                    class="bg-[#161B22] border border-[#30363D] rounded-xl p-md flex flex-col gap-md glow-hover transition-all flex-1">
+                    <div class="flex items-center gap-2 border-b border-[#30363D] pb-sm">
+                        <span class="material-symbols-outlined text-secondary">forum</span>
+                        <h2 class="font-headline-md text-headline-md text-on-surface text-xl">Join the Discussion</h2>
+                    </div>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant">Connect with maintainers and other
+                        developers in real-time.</p>
+                    <div class="flex flex-col gap-xs mt-auto">
+                        <a class="flex items-center justify-between p-sm rounded-DEFAULT border border-[#30363D] hover:border-primary hover:bg-[#21262D] transition-all group"
+                            href="#">
+                            <div class="flex items-center gap-2">
+                                <span
+                                    class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">chat</span>
+                                <span class="font-body-md text-body-md font-semibold text-on-surface">Discord
+                                    Server</span>
+                            </div>
+                            <span
+                                class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">arrow_forward</span>
+                        </a>
+                        <a class="flex items-center justify-between p-sm rounded-DEFAULT border border-[#30363D] hover:border-primary hover:bg-[#21262D] transition-all group"
+                            href="#">
+                            <div class="flex items-center gap-2">
+                                <span
+                                    class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">code</span>
+                                <span class="font-body-md text-body-md font-semibold text-on-surface">GitHub
+                                    Discussions</span>
+                            </div>
+                            <span
+                                class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">arrow_forward</span>
+                        </a>
+                    </div>
+                </div>
+                <!-- Contribution Guide -->
+                <div
+                    class="bg-gradient-to-br from-[#161B22] to-[#21262D] border border-primary/30 rounded-xl p-md flex flex-col gap-md glow-hover transition-all relative overflow-hidden group">
+                    <div
+                        class="absolute -right-8 -top-8 w-32 h-32 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-all">
+                    </div>
+                    <div class="flex items-center gap-2 border-b border-[#30363D]/50 pb-sm relative z-10">
+                        <span class="material-symbols-outlined text-primary">volunteer_activism</span>
+                        <h2 class="font-headline-md text-headline-md text-on-surface text-xl">Contribution Guide</h2>
+                    </div>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant relative z-10">Want to help shape
+                        DevLang? Read our guidelines for submitting PRs, reporting bugs, and proposing new features.</p>
+                    <a class="mt-auto inline-flex items-center gap-2 text-primary font-label-caps text-label-caps hover:brightness-110 transition-all relative z-10"
+                        href="#">
+                        Read Guidelines <span class="material-symbols-outlined" style="font-size: 16px;">east</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- Footer -->
+    <footer class="bg-surface-container-lowest border-t border-outline-variant w-full py-xl mt-auto">
+        <div
+            class="max-w-[1280px] mx-auto px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-md">
+            <div class="font-headline-md text-headline-md text-on-surface">DevLang</div>
+            <nav class="flex gap-md">
+                <a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors transition-opacity hover:opacity-80"
+                    href="#">GitHub</a>
+                <a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors transition-opacity hover:opacity-80"
+                    href="#">Documentation</a>
+                <a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors transition-opacity hover:opacity-80"
+                    href="#">Status</a>
+                <a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors transition-opacity hover:opacity-80"
+                    href="#">Discord</a>
+            </nav>
+            <div class="font-body-sm text-body-sm text-on-surface-variant">© 2024 DevLang Foundation. Built for
+                performance.</div>
+        </div>
+    </footer>
+</body>
+
+</html>
