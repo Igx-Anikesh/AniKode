@@ -874,32 +874,57 @@ export default function DocsPage() {
   );
 
   return (
-    <div style={{ width: '100%', minHeight: 'calc(100vh - 64px)' }}>
-      {/* 3-Column Documentation Layout Matching code.html */}
-      <div style={{
-        maxWidth: '1280px',
-        margin: '0 auto',
-        padding: '96px 32px 64px',
-        display: 'flex',
-        flexDirection: 'row',
-        gap: '32px',
-        position: 'relative',
+    <div style={{ maxWidth: '1440px', margin: '0 auto', padding: 'clamp(80px, 10vw, 100px) clamp(16px, 3vw, 32px) 60px', width: '100%', overflowX: 'hidden' }}>
+      
+      {/* Mobile Topic Selector Dropdown (< 1024px) */}
+      <div className="mobile-only" style={{
+        marginBottom: '24px',
+        width: '100%',
+        backgroundColor: 'var(--surface-container)',
+        border: '1px solid var(--outline-variant)',
+        borderRadius: '8px',
+        padding: '12px 16px',
       }}>
-        {/* Left Column: SideNavBar */}
+        <label className="font-label-caps" style={{ color: 'var(--primary)', display: 'block', marginBottom: '6px' }}>
+          Select Documentation Topic
+        </label>
+        <select
+          value={activeTopicId}
+          onChange={(e) => setActiveTopicId(e.target.value)}
+          style={{
+            width: '100%',
+            backgroundColor: 'var(--surface-container-high)',
+            border: '1px solid var(--outline-variant)',
+            color: 'var(--on-surface)',
+            padding: '10px 12px',
+            borderRadius: '6px',
+            fontSize: '14px',
+            fontWeight: 600,
+            outline: 'none',
+            cursor: 'pointer',
+          }}
+        >
+          {COMPLETE_DOCS.map((t, idx) => (
+            <option key={t.id} value={t.id} style={{ backgroundColor: '#1c2026', color: '#dfe2eb' }}>
+              {idx + 1}. {t.title}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div style={{ display: 'flex', gap: 'clamp(20px, 3vw, 40px)', position: 'relative' }}>
+        {/* Left Column: Sidebar Navigation (Desktop) */}
         <aside style={{
-          width: '280px',
+          width: '260px',
           flexShrink: 0,
           position: 'sticky',
-          top: '80px',
-          height: 'calc(100vh - 100px)',
-          backgroundColor: 'var(--surface-container-low)',
-          borderRight: '1px solid var(--outline-variant)',
-          padding: '24px 16px',
+          top: '96px',
+          height: 'calc(100vh - 120px)',
           overflowY: 'auto',
           display: 'flex',
           flexDirection: 'column',
           gap: '8px',
-        }} className="hidden md:flex">
+        }} className="docs-sidebar-desktop">
           <div style={{ marginBottom: '16px', paddingLeft: '8px' }}>
             <h2 className="font-headline-md" style={{ fontSize: '20px', color: 'var(--primary)', marginBottom: '4px' }}>
               Documentation
@@ -977,7 +1002,7 @@ export default function DocsPage() {
         </aside>
 
         {/* Center Column: Main Content Area */}
-        <main style={{ flex: 1, minWidth: 0, paddingBottom: '64px' }}>
+        <main className="docs-main-content" style={{ flex: 1, minWidth: 0, paddingBottom: '64px' }}>
           <article>
             {/* Header */}
             <header style={{ marginBottom: '32px' }}>
@@ -1244,7 +1269,7 @@ export default function DocsPage() {
           top: '96px',
           height: 'calc(100vh - 120px)',
           overflowY: 'auto',
-        }} className="hidden xl:block">
+        }} className="docs-toc-desktop">
           <h4 className="font-label-caps" style={{ color: 'var(--on-surface-variant)', marginBottom: '16px', textTransform: 'uppercase' }}>
             On this page
           </h4>

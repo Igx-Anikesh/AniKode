@@ -42,6 +42,8 @@
 
 html {
   scroll-behavior: smooth;
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
 body {
@@ -51,6 +53,8 @@ body {
   font-size: 16px;
   line-height: 1.5;
   min-height: 100vh;
+  max-width: 100vw;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -75,18 +79,26 @@ body {
   background: var(--outline);
 }
 
-/* Typography Utility Classes */
+/* Typography Utility Classes with Fluid Scaling */
+.font-display-lg {
+  font-family: var(--font-headline);
+  font-size: clamp(30px, 6vw, 56px);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  font-weight: 800;
+}
+
 .font-headline-lg {
   font-family: var(--font-headline);
-  font-size: 48px;
-  line-height: 1.1;
+  font-size: clamp(24px, 5vw, 44px);
+  line-height: 1.15;
   letter-spacing: -0.02em;
   font-weight: 700;
 }
 
 .font-headline-md {
   font-family: var(--font-headline);
-  font-size: 32px;
+  font-size: clamp(20px, 3.5vw, 32px);
   line-height: 1.2;
   letter-spacing: -0.01em;
   font-weight: 600;
@@ -94,7 +106,7 @@ body {
 
 .font-body-lg {
   font-family: var(--font-body);
-  font-size: 18px;
+  font-size: clamp(15px, 2vw, 18px);
   line-height: 1.6;
   font-weight: 400;
 }
@@ -123,12 +135,12 @@ body {
 
 .font-code-block {
   font-family: var(--font-mono);
-  font-size: 14px;
+  font-size: 13.5px;
   line-height: 1.6;
   font-weight: 400;
 }
 
-/* Interactive Components */
+/* Interactive Buttons */
 .btn-primary-action {
   display: inline-flex;
   align-items: center;
@@ -145,6 +157,7 @@ body {
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
+  min-height: 40px;
 }
 
 .btn-primary-action:hover {
@@ -172,6 +185,7 @@ body {
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
+  min-height: 40px;
 }
 
 .btn-secondary-action:hover {
@@ -183,12 +197,12 @@ body {
   transform: scale(0.95);
 }
 
-/* Feature Cards with smooth transitions */
+/* Feature Cards */
 .feature-card {
   background-color: var(--surface);
   border: 1px solid var(--outline-variant);
   border-radius: 12px;
-  padding: 32px;
+  padding: clamp(20px, 4vw, 32px);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -218,24 +232,11 @@ body {
   color: var(--on-primary-container);
 }
 
-/* Code Window & Glow */
+/* Code Window & Box */
 .code-wrapper {
   position: relative;
-}
-
-.code-glow {
-  position: absolute;
-  inset: -4px;
-  background: rgba(162, 201, 255, 0.2);
-  filter: blur(24px);
-  border-radius: 16px;
-  opacity: 0;
-  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  pointer-events: none;
-}
-
-.code-wrapper:hover .code-glow {
-  opacity: 1;
+  width: 100%;
+  max-width: 100%;
 }
 
 .code-box {
@@ -247,6 +248,8 @@ body {
   display: flex;
   flex-direction: column;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  width: 100%;
+  max-width: 100%;
 }
 
 .code-box-header {
@@ -264,3 +267,57 @@ body {
 .hl-string { color: #a5d6ff; }
 .hl-comment { color: #8b949e; font-style: italic; }
 .hl-number { color: #79c0ff; }
+.hl-operator { color: #7ee787; font-weight: 600; }
+
+/* ============================================================
+   RESPONSIVE UTILITIES & MEDIA QUERIES
+   ============================================================ */
+
+.hide-on-mobile {
+  display: flex;
+}
+
+.mobile-only {
+  display: none !important;
+}
+
+@media (max-width: 1024px) {
+  .docs-sidebar-desktop {
+    display: none !important;
+  }
+  .docs-toc-desktop {
+    display: none !important;
+  }
+  .docs-main-content {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  .hide-on-tablet {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .hide-on-mobile {
+    display: none !important;
+  }
+  .mobile-only {
+    display: block !important;
+  }
+  .mobile-flex-col {
+    flex-direction: column !important;
+  }
+  .mobile-full-width {
+    width: 100% !important;
+  }
+  
+  .hero-buttons-container {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    width: 100% !important;
+  }
+  .hero-buttons-container > a {
+    width: 100% !important;
+    text-align: center !important;
+  }
+}

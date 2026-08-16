@@ -32,21 +32,21 @@ say.out("Verified Logic:", isValid) ~ true ~`;
   };
 
   return (
-    <div style={{ width: '100%' }}>
+    <div style={{ width: '100%', overflowX: 'hidden' }}>
       {/* Hero Section */}
       <section style={{
         maxWidth: '1280px',
         margin: '0 auto',
-        padding: '120px 32px 80px',
+        padding: 'clamp(90px, 12vw, 130px) clamp(16px, 4vw, 32px) clamp(40px, 8vw, 80px)',
       }}>
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-          gap: '64px',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))',
+          gap: 'clamp(36px, 6vw, 64px)',
           alignItems: 'center',
         }}>
           {/* Left Hero Content */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(20px, 4vw, 32px)' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div style={{
                 display: 'inline-flex',
@@ -73,7 +73,7 @@ say.out("Verified Logic:", isValid) ~ true ~`;
               </p>
             </div>
 
-            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '16px' }}>
+            <div className="hero-buttons-container" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '12px' }}>
               <a
                 href={SITE_CONFIG.links.directDownloadExe}
                 download="anikode.exe"
@@ -90,7 +90,7 @@ say.out("Verified Logic:", isValid) ~ true ~`;
             </div>
 
             {/* Small subtle text link for older versions */}
-            <div style={{ marginTop: '-24px' }}>
+            <div style={{ marginTop: '-12px' }}>
               <a
                 href={SITE_CONFIG.links.releases}
                 target="_blank"
@@ -157,8 +157,8 @@ say.out("Verified Logic:", isValid) ~ true ~`;
               </div>
 
               {/* Code Content in Pure AniKode Syntax (1.25x length) */}
-              <div style={{ padding: '22px 24px', overflowX: 'auto' }}>
-                <pre className="font-code-block" style={{ margin: 0, color: 'var(--on-surface-variant)', lineHeight: 1.55, fontSize: '13.5px' }}>
+              <div style={{ padding: 'clamp(14px, 3vw, 22px) clamp(14px, 3vw, 24px)', overflowX: 'auto' }}>
+                <pre className="font-code-block" style={{ margin: 0, color: 'var(--on-surface-variant)', lineHeight: 1.55, fontSize: 'clamp(12px, 2.5vw, 13.5px)' }}>
                   <code>
                     <span className="hl-comment">~ AniKode High-Performance Fibonacci ~</span>{'\n'}
                     <span className="hl-keyword">fn</span> <span className="hl-function">fibonacci</span>(n) &#123;{'\n'}
@@ -189,9 +189,9 @@ say.out("Verified Logic:", isValid) ~ true ~`;
       <section style={{
         maxWidth: '1280px',
         margin: '0 auto',
-        padding: '60px 32px 100px',
+        padding: 'clamp(30px, 6vw, 60px) clamp(16px, 4vw, 32px) clamp(60px, 8vw, 100px)',
       }}>
-        <div style={{ marginBottom: '40px' }}>
+        <div style={{ marginBottom: '32px' }}>
           <h2 className="font-headline-md" style={{ color: 'var(--on-surface)' }}>
             Why AniKode?
           </h2>
@@ -199,8 +199,8 @@ say.out("Verified Logic:", isValid) ~ true ~`;
 
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-          gap: '24px',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
+          gap: '20px',
         }}>
           {/* Feature 1 */}
           <div className="feature-card">
@@ -247,18 +247,18 @@ say.out("Verified Logic:", isValid) ~ true ~`;
       <section id="downloads" style={{
         maxWidth: '1280px',
         margin: '0 auto',
-        padding: '0 32px 100px',
+        padding: '0 clamp(16px, 4vw, 32px) clamp(60px, 8vw, 100px)',
       }}>
         <div style={{
           backgroundColor: '#161B22',
           border: '1px solid #30363D',
           borderRadius: '16px',
-          padding: '48px 36px',
+          padding: 'clamp(28px, 6vw, 48px) clamp(16px, 5vw, 36px)',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           textAlign: 'center',
-          gap: '24px',
+          gap: '20px',
           boxShadow: '0 0 30px rgba(0,0,0,0.5)',
         }}>
           <p className="font-label-caps" style={{ color: 'var(--primary)' }}>
@@ -277,17 +277,19 @@ say.out("Verified Logic:", isValid) ~ true ~`;
             borderRadius: '8px',
             padding: '12px 20px',
             fontFamily: 'var(--font-mono)',
-            fontSize: '14px',
+            fontSize: 'clamp(12px, 2.5vw, 14px)',
             color: 'var(--on-surface)',
             display: 'flex',
             alignItems: 'center',
             gap: '12px',
+            maxWidth: '100%',
+            overflowX: 'auto',
           }}>
-            <Terminal size={16} color="var(--primary)" />
+            <Terminal size={16} color="var(--primary)" style={{ flexShrink: 0 }} />
             <code>npm install -g anikode</code>
           </div>
 
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginTop: '8px', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginTop: '8px', justifyContent: 'center', width: '100%' }}>
             <a
               href={SITE_CONFIG.links.directDownloadExe}
               download="anikode.exe"
@@ -317,6 +319,7 @@ say.out("Verified Logic:", isValid) ~ true ~`;
                 alignItems: 'center',
                 gap: '6px',
                 transition: 'color 0.2s',
+                textAlign: 'center',
               }}
               onMouseEnter={(e) => e.currentTarget.style.color = 'var(--primary)'}
               onMouseLeave={(e) => e.currentTarget.style.color = 'var(--on-surface-variant)'}

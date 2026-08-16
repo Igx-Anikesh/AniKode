@@ -125,6 +125,7 @@ export default function PlaygroundPage() {
   // Percentage for the first pane (editor): 20 to 80
   const [splitRatio, setSplitRatio] = useState<number>(50);
   const [isDragging, setIsDragging] = useState(false);
+  const [mobileTab, setMobileTab] = useState<'editor' | 'output'>('editor');
 
   const containerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -157,6 +158,10 @@ export default function PlaygroundPage() {
 
   const handleRun = () => {
     setIsRunning(true);
+    // On small screens, automatically switch to output tab
+    if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+      setMobileTab('output');
+    }
     setTimeout(() => {
       const result = compileAndExecute(code);
       setOutput(result.output);
@@ -252,7 +257,7 @@ export default function PlaygroundPage() {
       overflow: 'hidden',
       userSelect: isDragging ? 'none' : 'auto',
     }}>
-      {/* IDE Toolbar Component matching code.html */}
+      {/* IDE Toolbar */}
       <div style={{
         height: '48px',
         borderBottom: '1px solid var(--outline-variant)',
@@ -260,12 +265,12 @@ export default function PlaygroundPage() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '0 24px',
+        padding: '0 clamp(12px, 3vw, 24px)',
         flexShrink: 0,
-        gap: '16px',
+        gap: '10px',
       }}>
         {/* Left Side: Preset selector & File Badge */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0, flex: '1 1 auto' }}>
           <div style={{
             display: 'flex',
             alignItems: 'center',
@@ -274,14 +279,16 @@ export default function PlaygroundPage() {
             borderRadius: '6px',
             overflow: 'hidden',
             fontSize: '13px',
+            maxWidth: '100%',
           }}>
-            <span style={{
+            <span className="hide-on-mobile" style={{
               padding: '6px 12px',
               borderRight: '1px solid var(--outline-variant)',
               color: 'var(--on-surface-variant)',
               backgroundColor: 'var(--surface-container-low)',
               fontFamily: 'var(--font-mono)',
               fontSize: '12px',
+              whiteSpace: 'nowrap',
             }}>
               {PRESETS[activePresetKey]?.fileName || 'main.kode'}
             </span>
@@ -293,11 +300,12 @@ export default function PlaygroundPage() {
                 backgroundColor: 'transparent',
                 color: 'var(--on-surface)',
                 border: 'none',
-                padding: '6px 28px 6px 12px',
+                padding: '6px 24px 6px 10px',
                 fontSize: '13px',
                 fontFamily: 'var(--font-body)',
                 outline: 'none',
                 cursor: 'pointer',
+                maxWidth: '180px',
               }}
             >
               {Object.keys(PRESETS).map((k) => (
@@ -310,10 +318,9 @@ export default function PlaygroundPage() {
         </div>
 
         {/* Center / Right: Split Mode Toggles & Execution Buttons */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          {/* Split Mode Toggle Buttons */}
-          <div style={{
-            display: 'flex',
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+          {/* Split Mode Toggle Buttons (Desktop only) */}
+          <div className="hide-on-mobile" style={{
             backgroundColor: 'var(--surface-container-low)',
             border: '1px solid var(--outline-variant)',
             borderRadius: '6px',
@@ -337,7 +344,7 @@ export default function PlaygroundPage() {
               title="Side-by-Side (Horizontal Split)"
             >
               <Columns size={14} />
-              <span className="hidden sm:inline">Side</span>
+              <span>Side</span>
             </button>
 
             <button
@@ -358,7 +365,7 @@ export default function PlaygroundPage() {
               title="Stacked (Vertical Split)"
             >
               <Rows size={14} />
-              <span className="hidden sm:inline">Stack</span>
+              <span>Stack</span>
             </button>
           </div>
 
@@ -369,7 +376,7 @@ export default function PlaygroundPage() {
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              padding: '6px 12px',
+              padding: '6px 10px',
               border: '1px solid var(--outline-variant)',
               color: 'var(--on-surface-variant)',
               backgroundColor: 'transparent',
@@ -389,7 +396,7 @@ export default function PlaygroundPage() {
             title="Reset code to preset default"
           >
             <RotateCcw size={14} />
-            <span className="hidden sm:inline">Reset</span>
+            <span className="hide-on-mobile">Reset</span>
           </button>
 
           {/* Run Button */}
@@ -398,8 +405,8 @@ export default function PlaygroundPage() {
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '8px',
-              padding: '6px 18px',
+              gap: '6px',
+              padding: '6px 14px',
               backgroundColor: 'var(--primary)',
               color: 'var(--on-primary)',
               fontWeight: 700,
@@ -420,6 +427,58 @@ export default function PlaygroundPage() {
         </div>
       </div>
 
+      {/* Mobile Tab Switcher (< 768px) */}
+      <div className="mobile-only" style={{
+        backgroundColor: 'var(--surface-container-low)',
+        borderBottom: '1px solid var(--outline-variant)',
+        padding: '6px 12px',
+      }}>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button
+            onClick={() => setMobileTab('editor')}
+            style={{
+              flex: 1,
+              padding: '8px 12px',
+              borderRadius: '6px',
+              border: 'none',
+              backgroundColor: mobileTab === 'editor' ? 'var(--primary-container)' : 'transparent',
+              color: mobileTab === 'editor' ? '#ffffff' : 'var(--on-surface-variant)',
+              fontWeight: 600,
+              fontSize: '13px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+            }}
+          >
+            <Code2 size={14} />
+            <span>Code Editor</span>
+          </button>
+          <button
+            onClick={() => setMobileTab('output')}
+            style={{
+              flex: 1,
+              padding: '8px 12px',
+              borderRadius: '6px',
+              border: 'none',
+              backgroundColor: mobileTab === 'output' ? 'var(--primary-container)' : 'transparent',
+              color: mobileTab === 'output' ? '#ffffff' : 'var(--on-surface-variant)',
+              fontWeight: 600,
+              fontSize: '13px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+            }}
+          >
+            <Clock size={14} />
+            <span>Output {output.length > 0 ? `(${output.length})` : ''}</span>
+          </button>
+        </div>
+      </div>
+
       {/* Resizable Split Pane Container */}
       <div
         ref={containerRef}
@@ -433,6 +492,7 @@ export default function PlaygroundPage() {
       >
         {/* Left / Top Pane: Code Editor */}
         <div
+          className="desktop-pane-editor"
           style={{
             flex: `0 0 ${splitRatio}%`,
             display: 'flex',
@@ -525,8 +585,9 @@ export default function PlaygroundPage() {
           </div>
         </div>
 
-        {/* Resizer Handle (Draggable Divider) */}
+        {/* Resizer Handle (Draggable Divider - Desktop only) */}
         <div
+          className="desktop-resizer hide-on-mobile"
           onMouseDown={startResizing}
           style={{
             flexShrink: 0,
@@ -548,6 +609,7 @@ export default function PlaygroundPage() {
 
         {/* Right / Bottom Pane: Terminal / Output Console */}
         <div
+          className="desktop-pane-output"
           style={{
             flex: 1,
             display: 'flex',
@@ -674,6 +736,24 @@ export default function PlaygroundPage() {
           </div>
         </div>
       </div>
+
+      <style jsx>{`
+        @media (max-width: 768px) {
+          .desktop-pane-editor {
+            display: ${mobileTab === 'editor' ? 'flex' : 'none'} !important;
+            flex: 1 1 100% !important;
+            width: 100% !important;
+          }
+          .desktop-pane-output {
+            display: ${mobileTab === 'output' ? 'flex' : 'none'} !important;
+            flex: 1 1 100% !important;
+            width: 100% !important;
+          }
+          .desktop-resizer {
+            display: none !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

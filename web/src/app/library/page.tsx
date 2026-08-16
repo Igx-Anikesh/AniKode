@@ -70,10 +70,12 @@ export default function LibraryPage() {
       <main style={{
         maxWidth: '1280px',
         margin: '0 auto',
-        padding: '120px 32px 80px',
+        padding: 'clamp(80px, 10vw, 120px) clamp(16px, 4vw, 32px) 80px',
         display: 'flex',
         flexDirection: 'column',
         gap: '36px',
+        width: '100%',
+        overflowX: 'hidden',
       }}>
         {/* Header Banner */}
         <div style={{
@@ -196,7 +198,7 @@ export default function LibraryPage() {
         {/* Snippet Grid */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))',
           gap: '24px',
         }}>
           {filteredSnippets.map((snippet) => (

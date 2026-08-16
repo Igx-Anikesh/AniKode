@@ -67,10 +67,12 @@ export default function CommunityPage() {
       <main style={{
         maxWidth: '1280px',
         margin: '0 auto',
-        padding: '120px 32px 80px',
+        padding: 'clamp(80px, 10vw, 120px) clamp(16px, 4vw, 32px) 80px',
         display: 'flex',
         flexDirection: 'column',
         gap: '48px',
+        width: '100%',
+        overflowX: 'hidden',
       }}>
         {/* Hero Section */}
         <section style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '16px' }}>
