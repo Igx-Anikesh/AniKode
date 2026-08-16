@@ -59,6 +59,7 @@
     MINUS: 'MINUS',           // -
     MULTIPLY: 'MULTIPLY',     // *
     DIVIDE: 'DIVIDE',         // /
+    MODULO: 'MODULO',         // %
     
     // Comparison Operators
     EQ: 'EQ',                 // ==
@@ -386,6 +387,10 @@
         case '/':
           tok.type = TokenType.DIVIDE;
           tok.literal = '/';
+          break;
+        case '%':
+          tok.type = TokenType.MODULO;
+          tok.literal = '%';
           break;
         case '(':
           tok.type = TokenType.LPAREN;

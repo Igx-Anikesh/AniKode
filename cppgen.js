@@ -650,6 +650,12 @@ inline Value operator/(const Value& a, const Value& b) {
     return Value(a.toInt() / b.toInt());
 }
 
+inline Value operator%(const Value& a, const Value& b) {
+    long long bVal = b.toInt();
+    if (bVal == 0) throw AniKodeError("Division by zero in modulo", "DivisionByZeroError", __anikode_line);
+    return Value(a.toInt() % bVal);
+}
+
 inline bool operator==(const Value& a, const Value& b) {
     if (a.type == Value::STRING || b.type == Value::STRING) return a.toString() == b.toString();
     if (a.type == Value::FLOAT || b.type == Value::FLOAT) return a.toDouble() == b.toDouble();
@@ -948,6 +954,9 @@ inline Value any_fn(const Value& coll) {
       case 'ArrayLiteral':
         let elems = node.elements.map(el => this.generate(el)).join(', ');
         return `Value(std::vector<Value>{ ${elems} })`;
+
+      case 'IndexExpression':
+        return `(${this.generate(node.left)})[${this.generate(node.index)}]`;
 
       case 'BooleanLiteral':
         return `Value(${node.value ? 'true' : 'false'})`;

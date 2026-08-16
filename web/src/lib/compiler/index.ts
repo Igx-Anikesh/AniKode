@@ -61,8 +61,35 @@ export function compileAndExecute(
       throw new Error(`FileError: file.write("${filePath}") is not available in the web sandbox. Use desktop CLI ('anikode run') for file operations.`);
     };
 
+    const customMath = {
+      abs: Math.abs,
+      floor: Math.floor,
+      ceil: Math.ceil,
+      round: Math.round,
+      sqrt: Math.sqrt,
+      pow: Math.pow,
+      random: (min?: number, max?: number) => {
+        if (min === undefined) return Math.random();
+        if (Number.isInteger(min) && Number.isInteger(max)) return Math.floor(Math.random() * (max! - min + 1)) + min;
+        return Math.random() * ((max || 1) - min) + min;
+      },
+      min: Math.min,
+      max: Math.max,
+      clamp: (v: number, min: number, max: number) => Math.min(Math.max(v, min), max),
+      sin: Math.sin,
+      cos: Math.cos,
+      tan: Math.tan,
+      log: Math.log,
+      log10: (Math as any).log10 || Math.log,
+      exp: Math.exp,
+      pi: Math.PI,
+      PI: Math.PI,
+      e: Math.E,
+      E: Math.E
+    };
+
     const runner = new Function(
-      'console', '__say_in', '__file_read', '__file_write', 'Math', 'int', 'float', 'str', 'window', 'document',
+      'console', '__say_in', '__file_read', '__file_write', 'math', 'Math', 'int', 'float', 'str', 'window', 'document',
       compiledJs
     );
 
@@ -71,6 +98,7 @@ export function compileAndExecute(
       customSayIn,
       customFileRead,
       customFileWrite,
+      customMath,
       Math,
       (x: any) => parseInt(x, 10),
       (x: any) => parseFloat(x),

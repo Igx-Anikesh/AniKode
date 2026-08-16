@@ -41,8 +41,12 @@ export class CodeGenerator {
           .join('\n');
 
       case 'VarDeclaration':
-        this.declare(node.name);
-        return `let ${node.name} = ${this.generate(node.value)};`;
+        if (!this.isDeclared(node.name)) {
+          this.declare(node.name);
+          return `let ${node.name} = ${this.generate(node.value)};`;
+        } else {
+          return `${node.name} = ${this.generate(node.value)};`;
+        }
 
       case 'Assignment':
         if (node.left && node.left.type === 'MemberExpression') {
@@ -192,8 +196,12 @@ export class CodeGenerator {
         if (op === 'and') return `(Boolean(${left}) && Boolean(${right}))`;
         if (op === 'or') return `(Boolean(${left}) || Boolean(${right}))`;
         if (op === 'xor') return `((!${left} && Boolean(${right})) || (Boolean(${left}) && !${right}))`;
+        if (op === 'nand') return `(!(Boolean(${left}) && Boolean(${right})))`;
+        if (op === 'nor') return `(!(Boolean(${left}) || Boolean(${right})))`;
+        if (op === 'xnor') return `(!((!${left} && Boolean(${right})) || (Boolean(${left}) && !${right})))`;
         if (op === 'implies') return `(!${left} || Boolean(${right}))`;
         if (op === 'iff') return `(Boolean(${left}) === Boolean(${right}))`;
+        if (op === '%') return `(${left} % ${right})`;
         return `(${left} ${op} ${right})`;
 
       case 'PrefixExpression':
@@ -201,6 +209,9 @@ export class CodeGenerator {
           return `!Boolean(${this.generate(node.right)})`;
         }
         return `(${node.operator}${this.generate(node.right)})`;
+
+      case 'IndexExpression':
+        return `${this.generate(node.left)}[${this.generate(node.index)}]`;
 
       case 'Identifier':
         return node.value;
@@ -217,6 +228,7 @@ export class CodeGenerator {
       case 'NullLiteral':
         return 'null';
 
+      case 'ArrayLiteral':
       case 'ListLiteral':
         return `[${node.elements.map((el: any) => this.generate(el)).join(', ')}]`;
 
@@ -241,7 +253,33 @@ export class CodeGenerator {
         return `throw new Error(${this.generate(node.value)});`;
 
       case 'MemberExpression':
-        return `${this.generate(node.object)}.${node.property.value}`;
+        const objName = this.generate(node.object);
+        const propName = node.property.value;
+        if (objName === 'math') {
+          switch (propName) {
+            case 'pi': return 'Math.PI';
+            case 'e': return 'Math.E';
+            case 'abs': return 'Math.abs';
+            case 'min': return 'Math.min';
+            case 'max': return 'Math.max';
+            case 'pow': return 'Math.pow';
+            case 'sqrt': return 'Math.sqrt';
+            case 'floor': return 'Math.floor';
+            case 'ceil': return 'Math.ceil';
+            case 'round': return 'Math.round';
+            case 'sin': return 'Math.sin';
+            case 'cos': return 'Math.cos';
+            case 'tan': return 'Math.tan';
+            case 'log': return 'Math.log';
+            case 'log10': return 'Math.log10';
+            case 'exp': return 'Math.exp';
+            case 'clamp': return '((val, min, max) => Math.min(Math.max(val, min), max))';
+            case 'random': return '((min, max) => { if (min === undefined) return Math.random(); if (Number.isInteger(min) && Number.isInteger(max)) return Math.floor(Math.random() * (max - min + 1)) + min; return Math.random() * (max - min) + min; })';
+            default:
+              return `Math.${propName}`;
+          }
+        }
+        return `${objName}.${propName}`;
 
       default:
         return '';

@@ -57,8 +57,12 @@
 
         case 'VarDeclaration':
           // Explicit declaration: let x = 5 or set x to 5
-          this.declare(node.name);
-          return `let ${node.name} = ${this.generate(node.value)};`;
+          if (!this.isDeclared(node.name)) {
+            this.declare(node.name);
+            return `let ${node.name} = ${this.generate(node.value)};`;
+          } else {
+            return `${node.name} = ${this.generate(node.value)};`;
+          }
 
         case 'Assignment':
           // Implicit declaration or update: x = 5
@@ -294,6 +298,10 @@
           // [1, 2, 3] -> [1, 2, 3]
           let elems = node.elements.map(el => this.generate(el)).join(', ');
           return `[${elems}]`;
+
+        case 'IndexExpression':
+          // arr[index] or dict[key]
+          return `${this.generate(node.left)}[${this.generate(node.index)}]`;
 
         case 'BooleanLiteral':
           // true/false prints as-is

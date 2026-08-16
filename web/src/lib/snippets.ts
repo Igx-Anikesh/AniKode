@@ -38,13 +38,13 @@ loop i from 1 to 20 {
     tags: ['logic', 'security', 'boolean'],
     code: `~ Propositional Logic Access Rules ~
 fn verifyAccess(isAdmin, isManager, is2FA, score) {
-  \\ Rule 1: Admin implies 2FA is required \\
+  \\ Rule 1: Admin implies 2FA is active \\
   let rule1 = isAdmin implies is2FA
   
-  \\ Rule 2: Manager iff score >= 75 \\
-  let rule2 = isManager iff (score >= 75)
+  \\ Rule 2: Manager implies score >= 75 \\
+  let rule2 = isManager implies (score >= 75)
   
-  \\ Access is granted if all rules pass and score >= 50 \\
+  \\ Access is granted if rules pass and base score >= 50 \\
   return rule1 and rule2 and (score >= 50)
 }
 
@@ -56,7 +56,10 @@ let user2 = verifyAccess(false, true, false, 80)
 say.out("Manager (80 score) -> Access:", user2)
 
 let user3 = verifyAccess(true, false, false, 95)
-say.out("Admin (missing 2FA) -> Access:", user3)`
+say.out("Admin (missing 2FA) -> Access:", user3)
+
+let user4 = verifyAccess(false, true, false, 60)
+say.out("Manager (low score 60) -> Access:", user4)`
   },
   {
     id: 'binary-search',

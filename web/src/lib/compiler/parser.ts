@@ -22,6 +22,7 @@ export const Precedence = {
 export const TokenPrecedence: Record<string, number> = {
   [TokenType.ASSIGN]: Precedence.ASSIGN,
   [TokenType.DOT]: Precedence.DOT,
+  [TokenType.LBRACKET]: Precedence.CALL,
   [TokenType.EQ]: Precedence.EQUALS,
   [TokenType.NEQ]: Precedence.EQUALS,
   [TokenType.LT]: Precedence.LESSGREATER,
@@ -32,6 +33,7 @@ export const TokenPrecedence: Record<string, number> = {
   [TokenType.MINUS]: Precedence.SUM,
   [TokenType.MULTIPLY]: Precedence.PRODUCT,
   [TokenType.DIVIDE]: Precedence.PRODUCT,
+  [TokenType.MODULO]: Precedence.PRODUCT,
   [TokenType.AND]: Precedence.AND,
   [TokenType.NAND]: Precedence.AND,
   [TokenType.XOR]: Precedence.XOR,
@@ -608,6 +610,7 @@ export class Parser {
       case TokenType.MINUS:
       case TokenType.MULTIPLY:
       case TokenType.DIVIDE:
+      case TokenType.MODULO:
       case TokenType.EQ:
       case TokenType.NEQ:
       case TokenType.LT:
@@ -627,6 +630,14 @@ export class Parser {
         this.nextToken();
         const right = this.parseExpression(prec);
         return { type: 'InfixExpression', left, operator: op, right };
+
+      case TokenType.LBRACKET:
+        this.nextToken();
+        const indexVal = this.parseExpression(Precedence.LOWEST);
+        if (this.peekToken.type === TokenType.RBRACKET) {
+          this.nextToken();
+        }
+        return { type: 'IndexExpression', left, index: indexVal };
 
       case TokenType.ASSIGN:
         this.nextToken();

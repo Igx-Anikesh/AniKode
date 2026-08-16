@@ -21,16 +21,18 @@
     EQUALS: 5,         // == or !=
     LESSGREATER: 6,     // > or < or >= or <=
     SUM: 7,            // + or -
-    PRODUCT: 8,        // * or /
+    PRODUCT: 8,        // * or / or %
     PREFIX: 9,         // -x or not x
     CALL: 10,          // myFunction(x)
-    DOT: 11,           // object.property
+    INDEX: 11,         // arr[i]
+    DOT: 12,           // object.property
   };
 
   // Maps token types to their precedence levels
   const TokenPrecedence = {
     [TokenType.ASSIGN]: Precedence.ASSIGN,
     [TokenType.DOT]: Precedence.DOT,
+    [TokenType.LBRACKET]: Precedence.INDEX,
     [TokenType.EQ]: Precedence.EQUALS,
     [TokenType.NEQ]: Precedence.EQUALS,
     [TokenType.LT]: Precedence.LESSGREATER,
@@ -41,6 +43,7 @@
     [TokenType.MINUS]: Precedence.SUM,
     [TokenType.MULTIPLY]: Precedence.PRODUCT,
     [TokenType.DIVIDE]: Precedence.PRODUCT,
+    [TokenType.MODULO]: Precedence.PRODUCT,
     [TokenType.AND]: Precedence.AND,
     [TokenType.NAND]: Precedence.AND,
     [TokenType.XOR]: Precedence.XOR,
@@ -907,6 +910,24 @@
       };
     }
 
+    // Parses bracket index access: left[index]
+    parseIndexExpression(left) {
+      this.nextToken(); // Move past '['
+      let index = this.parseExpression(Precedence.LOWEST);
+
+      if (this.peekToken.type !== TokenType.RBRACKET) {
+        this.errors.push(`Line ${this.curToken.line}: Expected closing bracket ']' for index expression`);
+        return null;
+      }
+      this.nextToken(); // Move to ']'
+
+      return {
+        type: 'IndexExpression',
+        left: left,
+        index: index
+      };
+    }
+
     // Parses logical operators (and, or, xor, nand, nor, xnor, implies, iff)
     parseLogicalExpression(left) {
       let operator = this.curToken.literal;
@@ -1031,6 +1052,8 @@
       switch (tokenType) {
         case TokenType.LPAREN:
           return this.parseCallExpression;
+        case TokenType.LBRACKET:
+          return this.parseIndexExpression;
         case TokenType.DOT:
           return this.parseMemberExpression;
         case TokenType.ASSIGN:
@@ -1048,6 +1071,7 @@
         case TokenType.MINUS:
         case TokenType.MULTIPLY:
         case TokenType.DIVIDE:
+        case TokenType.MODULO:
         case TokenType.EQ:
         case TokenType.NEQ:
         case TokenType.LT:

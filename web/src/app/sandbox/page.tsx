@@ -131,14 +131,32 @@ export default function PlaygroundPage() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const lineCount = code.split('\n').length;
 
+  const runWithCode = (codeToRun: string) => {
+    setIsRunning(true);
+    // On small screens, automatically switch to output tab
+    if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+      setMobileTab('output');
+    }
+    setTimeout(() => {
+      const result = compileAndExecute(codeToRun);
+      setOutput(result.output);
+      setErrors(result.errors);
+      setExecutionTime(result.executionTimeMs);
+      setIsRunning(false);
+    }, 10);
+  };
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedCode = sessionStorage.getItem('anikode_sandbox_code');
       if (savedCode) {
         setCode(savedCode);
         sessionStorage.removeItem('anikode_sandbox_code');
+        runWithCode(savedCode);
+        return;
       }
     }
+    runWithCode(code);
   }, []);
 
   const handleSelectPreset = (key: string) => {
@@ -157,18 +175,7 @@ export default function PlaygroundPage() {
   };
 
   const handleRun = () => {
-    setIsRunning(true);
-    // On small screens, automatically switch to output tab
-    if (typeof window !== 'undefined' && window.innerWidth <= 768) {
-      setMobileTab('output');
-    }
-    setTimeout(() => {
-      const result = compileAndExecute(code);
-      setOutput(result.output);
-      setErrors(result.errors);
-      setExecutionTime(result.executionTimeMs);
-      setIsRunning(false);
-    }, 10);
+    runWithCode(code);
   };
 
   const handleClearTerminal = () => {

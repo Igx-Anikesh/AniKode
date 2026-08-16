@@ -52,6 +52,7 @@ export const TokenType = {
   MINUS: 'MINUS',
   MULTIPLY: 'MULTIPLY',
   DIVIDE: 'DIVIDE',
+  MODULO: 'MODULO',
 
   EQ: 'EQ',
   NEQ: 'NEQ',
@@ -283,6 +284,9 @@ export class Lexer {
         break;
       case '/':
         tok = { type: TokenType.DIVIDE, literal: '/', line: startLine, column: startCol };
+        break;
+      case '%':
+        tok = { type: TokenType.MODULO, literal: '%', line: startLine, column: startCol };
         break;
       case '(':
         tok = { type: TokenType.LPAREN, literal: '(', line: startLine, column: startCol };
