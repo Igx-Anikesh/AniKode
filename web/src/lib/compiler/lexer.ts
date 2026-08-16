@@ -240,6 +240,18 @@ export class Lexer {
     const startLine = this.line;
     const startCol = this.column;
 
+    if (this.ch === 's') {
+      const remaining = this.input.slice(this.position);
+      if (remaining.startsWith('say.out')) {
+        for (let i = 0; i < 7; i++) this.readChar();
+        return { type: TokenType.SAY_OUT, literal: 'say.out', line: startLine, column: startCol };
+      }
+      if (remaining.startsWith('say.in')) {
+        for (let i = 0; i < 6; i++) this.readChar();
+        return { type: TokenType.SAY_IN, literal: 'say.in', line: startLine, column: startCol };
+      }
+    }
+
     switch (this.ch) {
       case '=':
         if (this.peekChar() === '=') {
@@ -354,7 +366,7 @@ export class Lexer {
 
   readIdentifier(): string {
     const startPos = this.position;
-    while (this.ch !== null && (this.isLetter(this.ch) || this.isDigit(this.ch) || this.ch === '.' || this.ch === '_')) {
+    while (this.ch !== null && (this.isLetter(this.ch) || this.isDigit(this.ch) || this.ch === '_')) {
       this.readChar();
     }
     return this.input.slice(startPos, this.position);

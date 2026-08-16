@@ -231,7 +231,33 @@ try {
       int: (x) => parseInt(x, 10),
       float: (x) => parseFloat(x),
       str: (x) => String(x),
-      Math: Math
+      Math: Math,
+      math: {
+        abs: Math.abs,
+        floor: Math.floor,
+        ceil: Math.ceil,
+        round: Math.round,
+        sqrt: Math.sqrt,
+        pow: Math.pow,
+        random: (min, max) => {
+          if (min === undefined) return Math.random();
+          if (Number.isInteger(min) && Number.isInteger(max)) return Math.floor(Math.random() * (max - min + 1)) + min;
+          return Math.random() * ((max || 1) - min) + min;
+        },
+        min: Math.min,
+        max: Math.max,
+        clamp: (v, min, max) => Math.min(Math.max(v, min), max),
+        sin: Math.sin,
+        cos: Math.cos,
+        tan: Math.tan,
+        log: Math.log,
+        log10: Math.log10 || Math.log,
+        exp: Math.exp,
+        pi: Math.PI,
+        PI: Math.PI,
+        e: Math.E,
+        E: Math.E
+      }
       // NOTE: `require` intentionally NOT exposed — prevents arbitrary code execution
     };
 

@@ -34,7 +34,7 @@ export default function LibraryPage() {
   const handleOpenInSandbox = (code: string) => {
     if (typeof window !== 'undefined') {
       sessionStorage.setItem('anikode_sandbox_code', code);
-      router.push('/sandbox');
+      router.push(`/sandbox?t=${Date.now()}`);
     }
   };
 
@@ -47,7 +47,7 @@ export default function LibraryPage() {
       title: newTitle,
       description: newDesc || 'Community contributed AniKode function.',
       category: newCategory,
-      author: newAuthor || 'Community Member',
+      author: newAuthor || 'Anikesh',
       code: newCode,
       tags: newTags.split(',').map(t => t.trim()).filter(Boolean),
     };

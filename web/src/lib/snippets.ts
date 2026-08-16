@@ -34,7 +34,7 @@ loop i from 1 to 20 {
     title: 'Propositional Logic Security Auditor',
     description: 'Verify access control policies using first-class logic operators (implies, iff, all, any).',
     category: 'Logic',
-    author: 'SecurityLab',
+    author: 'Anikesh',
     tags: ['logic', 'security', 'boolean'],
     code: `~ Propositional Logic Access Rules ~
 fn verifyAccess(isAdmin, isManager, is2FA, score) {
@@ -66,7 +66,7 @@ say.out("Manager (low score 60) -> Access:", user4)`
     title: 'Binary Search Function',
     description: 'Fast O(log n) element lookup using recursion and the recurse() keyword.',
     category: 'Algorithms',
-    author: 'Algorist',
+    author: 'Anikesh',
     tags: ['search', 'recursion', 'binary-search'],
     code: `~ Recursive Binary Search in AniKode ~
 fn binarySearch(arr, target, low, high) {
@@ -98,7 +98,7 @@ say.out("Found at index:", foundIndex)`
     title: 'Polymorphic String & List Utilities',
     description: 'Manipulate strings, reverse sequences, and check memberships polymorphically.',
     category: 'Utilities',
-    author: 'CoreDev',
+    author: 'Anikesh',
     tags: ['strings', 'lists', 'utilities'],
     code: `~ Polymorphic Methods in AniKode ~
 set word = " AniKode Language "
@@ -117,7 +117,7 @@ say.out("Total Items:", languages.len())`
     title: 'Statistical Aggregator (Mean & Clamp)',
     description: 'Calculate average and clamp scores using built-in math namespace.',
     category: 'Math',
-    author: 'DataSci',
+    author: 'Anikesh',
     tags: ['math', 'statistics', 'averages'],
     code: `~ Statistical Aggregator ~
 fn calculateStats(scores) {
@@ -143,7 +143,7 @@ say.out("Average Score:", stats.average)`
     title: 'Number Guessing Mini Game',
     description: 'Simple interactive game using random generation and conditionals.',
     category: 'Games',
-    author: 'GamerX',
+    author: 'Anikesh',
     tags: ['game', 'interactive', 'math'],
     code: `~ Number Guessing Game ~
 let secret = math.floor(math.random() * 50) + 1

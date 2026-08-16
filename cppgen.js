@@ -150,6 +150,50 @@ public:
     }
 
     // Index lookup operators for vector and maps
+    Value& operator[](const Value& key) {
+        if (type == MAP) {
+            return mapVal[key.toString()];
+        }
+        if (type == VECTOR) {
+            int idx = (int)key.toInt();
+            if (idx < 0 || idx >= (int)vecVal.size()) {
+                throw AniKodeError("Index out of bounds", "IndexError", __anikode_line);
+            }
+            return vecVal[idx];
+        }
+        if (type == STRING) {
+            static Value charVal;
+            int idx = (int)key.toInt();
+            if (idx < 0 || idx >= (int)strVal.length()) {
+                throw AniKodeError("Index out of bounds", "IndexError", __anikode_line);
+            }
+            charVal = Value(std::string(1, strVal[idx]));
+            return charVal;
+        }
+        throw AniKodeError("Cannot index into non-collection type", "TypeError", __anikode_line);
+    }
+    Value operator[](const Value& key) const {
+        if (type == MAP) {
+            auto it = mapVal.find(key.toString());
+            if (it != mapVal.end()) return it->second;
+            return Value();
+        }
+        if (type == VECTOR) {
+            int idx = (int)key.toInt();
+            if (idx < 0 || idx >= (int)vecVal.size()) {
+                throw AniKodeError("Index out of bounds", "IndexError", __anikode_line);
+            }
+            return vecVal[idx];
+        }
+        if (type == STRING) {
+            int idx = (int)key.toInt();
+            if (idx < 0 || idx >= (int)strVal.length()) {
+                throw AniKodeError("Index out of bounds", "IndexError", __anikode_line);
+            }
+            return Value(std::string(1, strVal[idx]));
+        }
+        return Value();
+    }
     Value& operator[](const std::string& key) {
         if (type != MAP) {
             type = MAP;
@@ -815,8 +859,12 @@ inline Value any_fn(const Value& coll) {
         return cppCode;
 
       case 'VarDeclaration':
-        this.declare(node.name);
-        return `__anikode_line = ${node.line || 1};\nValue ${node.name} = ${this.generate(node.value)};`;
+        if (!this.isDeclared(node.name)) {
+          this.declare(node.name);
+          return `__anikode_line = ${node.line || 1};\nValue ${node.name} = ${this.generate(node.value)};`;
+        } else {
+          return `__anikode_line = ${node.line || 1};\n${node.name} = ${this.generate(node.value)};`;
+        }
 
       case 'Assignment':
         let linePrefix = `__anikode_line = ${node.line || 1};\n`;
@@ -841,7 +889,7 @@ inline Value any_fn(const Value& coll) {
         return `__anikode_line = ${node.line || 1};\n${this.generate(node.expression)};`;
 
       case 'IfStatement':
-        let code = `__anikode_line = ${node.line || 1};\nif (${this.generate(node.condition)}) {\n`;
+        let code = `if (${this.generate(node.condition)}) {\n`;
         this.pushScope();
         code += this.generate(node.consequence);
         this.popScope();

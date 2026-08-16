@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { compileAndExecute } from '@/lib/compiler';
 import { 
   Play, 
@@ -108,10 +109,16 @@ try {
 } finally {
   say.out("Cleanup complete.")
 }`
+  },
+  custom: {
+    title: 'Custom Snippet',
+    fileName: 'snippet.kode',
+    code: ''
   }
 };
 
-export default function PlaygroundPage() {
+function SandboxContent() {
+  const searchParams = useSearchParams();
   const [activePresetKey, setActivePresetKey] = useState('calculator');
   const [code, setCode] = useState(PRESETS.calculator.code);
   const [output, setOutput] = useState<string[]>([]);
@@ -150,14 +157,15 @@ export default function PlaygroundPage() {
     if (typeof window !== 'undefined') {
       const savedCode = sessionStorage.getItem('anikode_sandbox_code');
       if (savedCode) {
-        setCode(savedCode);
         sessionStorage.removeItem('anikode_sandbox_code');
+        setCode(savedCode);
+        setActivePresetKey('custom');
         runWithCode(savedCode);
         return;
       }
     }
     runWithCode(code);
-  }, []);
+  }, [searchParams]);
 
   const handleSelectPreset = (key: string) => {
     setActivePresetKey(key);
@@ -762,5 +770,13 @@ export default function PlaygroundPage() {
         }
       `}</style>
     </div>
+  );
+}
+
+export default function PlaygroundPage() {
+  return (
+    <Suspense fallback={<div style={{ padding: '60px', textAlign: 'center', color: 'var(--on-surface-variant)' }}>Loading AniKode Sandbox...</div>}>
+      <SandboxContent />
+    </Suspense>
   );
 }
