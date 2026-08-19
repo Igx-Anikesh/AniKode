@@ -29,7 +29,7 @@ A statically-guarded, dual-target programming language combining the simplicity 
 ---
 
 <div align="center">
-  <img src="assets/landing-preview.png" alt="AniKode Landing Page Preview" width="100%" />
+  <img src="assets/anikode-home.png" alt="AniKode Landing Page Preview" width="100%" />
 </div>
 
 ---
@@ -249,7 +249,7 @@ anikode build script.kode
 The `web/` directory contains a full-stack Next.js web application featuring an interactive in-browser IDE, comprehensive documentation, and a community algorithm library.
 
 <div align="center">
-  <img src="assets/sandbox-preview.png" alt="AniKode Sandbox IDE" width="100%" />
+  <img src="assets/anikode-sandbox.png" alt="AniKode Sandbox IDE" width="100%" />
 </div>
 
 ### Running the Web Platform Locally
